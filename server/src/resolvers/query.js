@@ -7,6 +7,16 @@ const query = {
     const users = await ctx.prisma.users({ where: { id } })
     return users[0]
   }
+
+//const myProfile = {
+ // async 
+
+
+
+//}
+
+
+
 }
 
 module.exports = { query }
