@@ -1,10 +1,14 @@
 type Query {
-  me: User!
+  hotel:   hotelUser!
+  pt:      ptUser!
+  adviser: adviserUser!
 }
 
 type Mutation {
-  signup(email: String!, password: String!, name: String!): AuthPayload!
-  login(email: String!, password: String!): AuthPayload!
+  hotelsignup(email: String!, password: String!, name: String!): AuthPayload!
+  hotellogin(email: String!, password: String!): AuthPayload!
+  advisersignup(email:String!,password:String!,name:String!):AuthPayload!
+  adviserlogin(email:String!,password:String!):AuthPayload!
 }
 
 type AuthPayload {
@@ -12,8 +16,3 @@ type AuthPayload {
   user: User!
 }
 
-type User {
-  id: ID!
-  email: String!
-  name: String!
-}
