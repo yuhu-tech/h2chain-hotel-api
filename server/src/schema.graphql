@@ -17,20 +17,18 @@ companyname:String!
 }
 
 type Order {
-orderid: String!
-
 adviser: Adviser!
+state : Int!
 originorder:Originorder!
 modifiedorder:[Modifiedorder]
-
 maleyet:Int!
 femaleyet:Int!
 countyet:Int!
-
 }
 
 
 type Originorder{
+  orderid : String!
   occupation: String!
   datetime: Int!
   duration: Int!
@@ -43,6 +41,7 @@ type Originorder{
 }
 
 input InputOriginorder {
+  orderid : String!
   occupation: String!
   datetime: Int!
   duration: Int!
@@ -54,7 +53,7 @@ input InputOriginorder {
 }
 
 input InputModifiedorder{
-  orderid: String!
+  orderid: String
   changeddatetime: Int!
   changedduration: Int!
   changedmode: Int!
@@ -77,8 +76,8 @@ type Modifiedorder{
 
 type Mutation {
   signup(email: String!, password: String!, name: String!): AuthPayload!
-  login(email: String!, password: String!): AuthPayload!
-  changepassword(oldpassword: String!, newpassword: String!): AuthPayload!
+  login(email: String!, password: String!,jscode:String!): AuthPayload!
+  changepassword(oldpassword: String!, newpassword: String!): CPwdPayload!
   createorder(createorder:InputOriginorder!): OrderPayload
   modifyorder(modifiedorder:InputModifiedorder!):OrderPayload
   closeorder(orderid: String!):OrderPayload
@@ -89,6 +88,10 @@ type OrderPayload {
   error: Boolean
 }
 
+type CPwdPayload{
+  error : Boolean
+}
+
 
 type AuthPayload {
   token: String!
@@ -97,6 +100,7 @@ type AuthPayload {
 
 type User {
   id: ID!
+  name: String!
   email: String!
   password:String!
   profile:Profile
@@ -105,7 +109,7 @@ type User {
 
 type Profile{
   id: ID!
-  cover: String!
+  cover: [String]!
   phone: String!
   name: String!
   occupation:String!

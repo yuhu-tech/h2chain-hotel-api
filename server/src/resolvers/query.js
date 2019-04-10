@@ -1,25 +1,31 @@
 const { getUserId } = require('../utils')
-const {need, orderbyorderid, orderbydate,order2,order3}= require('./mock')
-
-console.log(need)
-console.log(orderbyorderid)
-console.log[order2,order3]
-
+const {need,orderbyorderid, orderbydate,order2,order3, user}= require('./mock')
 
 const query = {
+  //my information and my profile
   async me (parent, args, ctx, info) {
     const id = getUserId(ctx)
-    console.log(id)
-    const users = await ctx.prisma.users({where:{ id }})
+    console.log(id);
+    const users = await ctx.prismaHotel.users({where:{id}})
     console.log(users[0])
-    return users[0]
-  },
-
+    const profiles  =  await ctx.prismaHotel.profiles({where:{user:{id : id}}})
+    var meResult = {
+      id:users[0].id,
+      name:users[0].name,
+      email:users[0].email,
+      profile:profiles[0]
+    }
+    return meRsult
+   },
+  
+  //needs for hotels to choose
   async need (parent,args,ctx,info) {
-    const id = getUserId(ctx)
-    const mneed = need
-    console.log(mneed)
-    return mneed
+    const occupations = await ctx.prismaHotel.occupations()
+    const advisers = await ctx.prismaHr.users()
+    var needResult = {
+      occupations:occupations,
+      advisers:advisers
+    }
   },
 
   async search (parent, args, ctx, info){
@@ -37,7 +43,6 @@ const query = {
           return order
         }
   }
-
 }
 
 module.exports = { query }
