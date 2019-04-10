@@ -15,18 +15,7 @@ const server = new GraphQLServer({
     prismaClient
   })
 })
-
-//const server = new GraphQLServer({
-//  typeDefs: ['src/schema.graphql','../../h2chain-adviser-api/server/src/schema.graphql'],
-//  resolvers_hotel,
-//  resolvers_adviser,
-//  context: req => ({
-//    ...req,
-//    prisma
-//  })
-//  })
-
+//we add all prismas into ctx 
 server.start(() => console.log('Server is running on http://localhost:4000'));
-//server_adviser.start(()=> console.log('Server is running on http://localhost:4001'))
 
 
