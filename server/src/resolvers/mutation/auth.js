@@ -16,10 +16,11 @@ const auth = {
 
   async login(parent, { email, password }, ctx, info) {
     const users = await ctx.prismaHotel.users({ where: { email } })
-    if (!users) {
+    if (users.length == 0) {
       throw new Error(`No such user found for email: ${email}`)
     }
     const user = users[0]
+    console.log(users[0])
 
     const valid = await bcrypt.compare(password, user.password)
     if (!valid) {
