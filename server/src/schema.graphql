@@ -12,8 +12,8 @@ advisers:[Adviser]!
 
 type Adviser{
 name:String!
-phone:String!
-companyname:String!
+phone:String
+companyname:String
 }
 
 type Order {
@@ -41,7 +41,7 @@ type Originorder{
 }
 
 input InputOriginorder {
-  orderid : String!
+  orderid: String
   occupation: String!
   datetime: Int!
   duration: Int!
