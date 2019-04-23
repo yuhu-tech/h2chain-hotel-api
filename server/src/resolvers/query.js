@@ -33,7 +33,7 @@ const query = {
 
   async search (parent, args, ctx, info){
     const id = getUserId(ctx)
-    console.log(id)
+    console.log("id is ..."+ id)
     var result =  handles.HotelGetOrderList(ctx,id,args.orderid,args.state,args.datetime)    
     return result
 

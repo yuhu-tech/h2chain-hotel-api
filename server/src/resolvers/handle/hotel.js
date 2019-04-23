@@ -78,6 +78,8 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
             var adviserId = res.orderOrigins[i].adviserId
             var users = await ctx.prismaHr.users({where:{id:adviserId}})
             var profiles = await ctx.prismaHr.profiles({where:{user:{id:users[0].id}}})
+            console.log(users)
+            console.log(profiles)
             adviser['name'] = users[0].name
             adviser['companyname'] = profiles[0].companyname
             adviser['phone'] = profiles[0].phone
@@ -85,22 +87,43 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
             obj['modifiedorder'] = modifiedorder
             obj['originorder'] = originorder
             obj['adviser'] = adviser
-            obj['state'] = res.orderOrigins[i].status
+            obj['state'] = res.orderOrigins[i].status - 1
 
+            var pts = []
             // 查询当前已报名的男女人数
             // 调用queryPTOfOrder()接口查询，某个订单下已报名PT的总人数
             try {
                 var request = new messages.QueryPTRequest();
                 request.setOrderid(res.orderOrigins[i].id);
-                request.setPtid('');
-                request.setRegistrationchannel('');
                 request.setPtstatus(1);
                 var response = await queryPt(request)
                 obj['countyet'] = response.array[0].length
-                // ptid  response.array[0][0][0]
-                obj['maleyet'] = 2
-                obj['femaleyet'] = 1
-            } catch (error) {
+                if (obj['maleyet'] == undefined) {obj['maleyet'] = 0}
+                if (obj['femaleyet'] == undefined) {obj['femaleyet'] = 0}
+                for (var k = 0; k < obj['countyet']; k++){
+                var ptid = response.array[0][k][0]
+                var personalmsgs  = await ctx.prismaClient.personalmsgs({where:{user:{id:ptid}}})
+                 // to judge if there is a male or female
+                if (personalmsgs[0].gender == 1)  {
+                   obj['maleyet']= obj['maleyet'] + 1
+                 } else {
+                   obj['femaleyet'] == obj['femaleyet'] + 1
+                 }
+                 //TODO
+                 //to retrieve other pt message here
+                var pt = {}
+                pt['id'] = ptid
+                pt['name'] = personalmsgs[0].name
+                pt['idnumber'] = personalmsgs[0].idnumber
+                pt['gender'] = personalmsgs[0].gender
+                pt['wechatname'] = "mocked wechat id"
+                pt['phonenumber'] = personalmsgs[0].phonenumber
+                pt['worktimes'] = "mocked worktimes"
+                pts.push(pt)
+            } 
+                obj['pt'] = pts
+            } 
+                catch (error) {
                 throw error
             }
 

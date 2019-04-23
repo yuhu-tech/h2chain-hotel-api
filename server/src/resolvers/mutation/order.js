@@ -43,15 +43,11 @@ const order = {
   async closeorder(parent,args,ctx,info) {
     var client = new services.MutationClient('127.0.0.1:50051',grpc.credentials.createInsecure());
     var request = new messages.CloseRequest();
-    request.setOrderid(args.id)
-
-
+    request.setOrderid(args.orderid)
     client.closeOrder(request, function(err,response){
     console.log(response);
     })
-  }
-
-
+   }
 }
 
 /*
