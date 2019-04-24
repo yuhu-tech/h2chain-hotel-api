@@ -19,7 +19,6 @@ const order = {
     request.setDuration(args.createorder.duration)
     request.setCount(args.createorder.count)
     request.setCountmale(args.createorder.male)
-    request.setCountfemale(args.createorder.female)
     request.setMode(args.createorder.mode)
     client.createOrder(request, function(err, response) {
     console.log(response);
@@ -50,18 +49,5 @@ const order = {
    }
 }
 
-/*
-    return{"orderid":"ord123","error":false}
-  },
-
-  async modifyorder(parent,args,ctx,info){
-    return{"orderid":"ord123","error":false}
-  },
-
-  async closeorder(parent,args,ctx,info){
-    return{"orderid":"ord123","error":false}
-  }
-  }
-*/
 
 module.exports = { order }

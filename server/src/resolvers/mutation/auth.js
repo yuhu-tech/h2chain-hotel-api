@@ -45,7 +45,9 @@ const auth = {
       if (!valid) {
          throw new Error ('Invalid Password')
       }
-      else {
+      else 
+        {
+        try {
         const newPassword = await bcrypt.hash(args.newpassword, 10)
         const returning = await ctx.prismaHotel.updateUser(
           {
@@ -53,21 +55,14 @@ const auth = {
             where:{id: users[0].id}
           }
         )
+       } catch (error)
+          {
+            throw error
+          } 
       }
       return{"error":false}
-  },
-
-  async createorder(parent,args,ctx,info){
-    return{"orderid":"ord123","error":false}
-  },
-
-  async modifyorder(parent,args,ctx,info){
-    return{"orderid":"ord123","error":false}
-  },
-
-  async closeorder(parent,args,ctx,info){
-    return{"orderid":"ord123","error":false}
   }
+
 }
 
 

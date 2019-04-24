@@ -48,7 +48,6 @@ input InputOriginorder {
   mode: Int!
   count: Int!
   male: Int!
-  female: Int!
   advisername: String!
 }
 

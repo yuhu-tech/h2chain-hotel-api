@@ -34,10 +34,10 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
        if (hotelid != null && hotelid != undefined){
          request.setHotelid(hotelid)
        }
-       else if (datetime != null && datetime != undefined){
+       if (datetime != null && datetime != undefined){
          request.setDate(datetime)
        }
-       else if (state != null && state != undefined){
+       if (state != null && state != undefined){
          request.setStatus(state)
        } 
         var response = await queryOrder(request);
@@ -69,8 +69,14 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
             originorder['duration'] = res.orderOrigins[i].duration
             originorder['mode'] = res.orderOrigins[i].mode
             originorder['count'] = res.orderOrigins[i].count
+            //we judge if we will tranfer male and female number by the mode
+            if (res.orderOrigins[i].mode == 0 ){
+            originorder['male'] = 0
+            originorder['female'] = 0
+            } else { 
             originorder['male'] = res.orderOrigins[i].countMale
             originorder['female'] = res.orderOrigins[i].count - res.orderOrigins[i].countMale
+            }
             originorder['orderstate'] = res.orderOrigins[i].status - 1
 
             var adviser = {}
