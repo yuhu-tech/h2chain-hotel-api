@@ -66,7 +66,7 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
             originorder['orderid'] = res.orderOrigins[i].id
             originorder['occupation'] = res.orderOrigins[i].job
             originorder['datetime'] = res.orderOrigins[i].datetime
-            originorder['duration'] = res.orderOrigins[i].duration
+            originorder['duration'] = res.orderOrigins[i].duration/3600
             originorder['mode'] = res.orderOrigins[i].mode
             originorder['count'] = res.orderOrigins[i].count
             //we judge if we will tranfer male and female number by the mode

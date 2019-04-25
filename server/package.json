@@ -17,6 +17,7 @@
     "jsonwebtoken": "^8.5.0",
     "mockjs": "^1.0.1-beta3",
     "nodemon": "^1.18.10",
-    "prisma-client-lib": "^1.28.0"
+    "prisma-client-lib": "^1.28.0",
+    "request": "^2.88.0"
   }
 }

@@ -80,6 +80,7 @@ type Mutation {
   createorder(createorder:InputOriginorder!): OrderPayload
   modifyorder(modifiedorder:InputModifiedorder!):OrderPayload
   closeorder(orderid: String!):OrderPayload
+  updatewechat:Boolean
 }
 
 type OrderPayload {

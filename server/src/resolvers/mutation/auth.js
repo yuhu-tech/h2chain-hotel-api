@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const {getUserId} = require('../../utils')
+const {getUserId,getOpenId} = require('../../utils')
 
 const auth = {
   async signup(parent, args, ctx, info) {
@@ -14,19 +14,28 @@ const auth = {
     }
   },
 
-  async login(parent, { email, password }, ctx, info) {
+  async login(parent, { email, password, jscode}, ctx, info) {
     const users = await ctx.prismaHotel.users({ where: { email } })
     if (users.length == 0) {
       throw new Error(`No such user found for email: ${email}`)
     }
     const user = users[0]
-    console.log(users[0])
-
     const valid = await bcrypt.compare(password, user.password)
     if (!valid) {
       throw new Error('Invalid password')
     }
-
+    //we will update wechat openid here
+    try {
+    wechat = await getOpenId(jscode,1) 
+    console.log(wechat)
+    const thisuser = await ctx.prismaHotel.updateUser(
+      { data:{wechat:wechat},
+        where:{email:email}
+      }
+      )
+    } catch(error){
+      throw(error)
+    }
     return {
       token: jwt.sign({ userId: user.id }, 'jwtsecret123'),
       user
@@ -61,8 +70,7 @@ const auth = {
           } 
       }
       return{"error":false}
-  }
-
+  },
 }
 
 
