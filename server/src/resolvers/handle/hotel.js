@@ -26,7 +26,8 @@ function queryPt(request) {
 
 
 async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
-    try {
+     console.log(orderid)
+     try {
        var request = new messages.QueryRequest();
        if (orderid != null && orderid != undefined){
          request.setOrderid(orderid)
@@ -34,6 +35,7 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
        if (hotelid != null && hotelid != undefined){
          request.setHotelid(hotelid)
        }
+       console.log(datetime)
        if (datetime != null && datetime != undefined){
          request.setDate(datetime)
        }
@@ -52,7 +54,7 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
                     var modifiedorderObj = {}
                     modifiedorderObj['orderid'] = res.orderOrigins[i].id
                     modifiedorderObj['changeddatetime'] = res.orderOrigins[i].orderHotelModifies[j].dateTime
-                    modifiedorderObj['changedduration'] = res.orderOrigins[i].orderHotelModifies[j].duration
+                    modifiedorderObj['changedduration'] = res.orderOrigins[i].orderHotelModifies[j].duration/3600
                     modifiedorderObj['changedmode'] = res.orderOrigins[i].orderHotelModifies[j].mode
                     modifiedorderObj['changedcount'] = res.orderOrigins[i].orderHotelModifies[j].count
                     modifiedorderObj['changedmale'] = res.orderOrigins[i].orderHotelModifies[j].countMale
@@ -110,10 +112,10 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
                 var ptid = response.array[0][k][0]
                 var personalmsgs  = await ctx.prismaClient.personalmsgs({where:{user:{id:ptid}}})
                  // to judge if there is a male or female
-                if (personalmsgs[0].gender == 1)  {
+                if (JSON.parse(personalmsgs[0].gender) == 1)  {
                    obj['maleyet']= obj['maleyet'] + 1
-                 } else {
-                   obj['femaleyet'] == obj['femaleyet'] + 1
+                   } else if (JSON.parse(personalmsgs[0].gender) == 2) {
+                   obj['femaleyet']= obj['femaleyet'] + 1
                  }
                  //TODO
                  //to retrieve other pt message here
@@ -124,7 +126,7 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
                 pt['gender'] = personalmsgs[0].gender
                 pt['wechatname'] = "mocked wechat id"
                 pt['phonenumber'] = personalmsgs[0].phonenumber
-                pt['worktimes'] = "mocked worktimes"
+                pt['worktimes'] = 10
                 pts.push(pt)
             } 
                 obj['pt'] = pts

@@ -2,6 +2,7 @@ type Query {
   me: User!
   need: Needs
   search(orderid: String,state:Int,datetime:Int):[Order]
+  searchptoforder(orderid:String):[Order]
 }
 
 
@@ -24,8 +25,18 @@ modifiedorder:[Modifiedorder]
 maleyet:Int!
 femaleyet:Int!
 countyet:Int!
+pt:[PtPayload]
 }
 
+type PtPayload{
+ptid:String
+name:String
+idnumber:String
+gender:Int
+wechatname:String
+phonenumber:String
+worktimes:Int
+}
 
 type Originorder{
   orderid : String!

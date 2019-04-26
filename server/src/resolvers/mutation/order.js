@@ -25,7 +25,7 @@ const order = {
     });
    },
   
-  async modifyorder(parent,args,crx,info){
+  async modifyorder(parent,args,ctx,info){
     var request = new messages.ModifyRequest();
         request.setOrderid(args.modifiedorder.orderid);
         request.setDatechanged(args.modifiedorder.changeddatetime);
@@ -33,9 +33,13 @@ const order = {
         request.setCountchanged(args.modifiedorder.changedcount);
         request.setCountmalechanged(args.modifiedorder.changedmale);
         request.setMode(args.modifiedorder.changedmode);
-    client.modifyOrder(request,function(err,response){
-        console.log(response.array)
-    });
+    client.modifyOrder(request,function(err,response){console.log(response.array)})
+    //we need to change the state of pt to order to 4 for the pts to decide if they will go.
+    var request = new messages.ModifyPtRequest();
+        request.setOrderid(args.modifiedorder.orderid);       // OrderID 必传
+        request.setTargetstatus(4);                           // PT 目标状态 筛选条件，不同传 -1  
+        request.setSourcestatus(1);                           // PT 原始状态  
+    client.modifyPTOfOrder(request,function(err,response){console.log(response.array)});
   },
 
  
@@ -46,7 +50,7 @@ const order = {
     client.closeOrder(request, function(err,response){
     console.log(response);
     })
-   }
+  }
 }
 
 

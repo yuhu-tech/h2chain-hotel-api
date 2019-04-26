@@ -36,7 +36,12 @@ const query = {
     var result =  handles.HotelGetOrderList(ctx,id,args.orderid,args.state,args.datetime)    
     return result
 
+    },
+
+  async searchptoforder (parent, args, ctx, info){
+    const id = getUsedId(ctx)
+    var result =  handles.HotelGetOrderList(args.orderid)
+    return result
     }
 }
-
 module.exports = { query }
