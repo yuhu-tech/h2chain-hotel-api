@@ -103,7 +103,7 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
             try {
                 var request = new messages.QueryPTRequest();
                 request.setOrderid(res.orderOrigins[i].id);
-                request.setPtstatus(1);
+                request.setPtstatus(13);
                 var response = await queryPt(request)
                 obj['countyet'] = response.array[0].length
                 if (obj['maleyet'] == undefined) {obj['maleyet'] = 0}
@@ -117,8 +117,6 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
                    } else if (JSON.parse(personalmsgs[0].gender) == 2) {
                    obj['femaleyet']= obj['femaleyet'] + 1
                  }
-                 //TODO
-                 //to retrieve other pt message here
                 var pt = {}
                 pt['id'] = ptid
                 pt['name'] = personalmsgs[0].name
