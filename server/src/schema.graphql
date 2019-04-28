@@ -36,6 +36,8 @@ gender:Int
 wechatname:String
 phonenumber:String
 worktimes:Int
+height:Int
+weight:Int
 }
 
 type Originorder{

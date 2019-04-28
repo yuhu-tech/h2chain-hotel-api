@@ -125,6 +125,10 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
                 pt['wechatname'] = "mocked wechat id"
                 pt['phonenumber'] = personalmsgs[0].phonenumber
                 pt['worktimes'] = 10
+                var personalmsgs = await ctx.prismaClient.personalmsgs({where:{user:{id:ptid}}})
+                var personalmsg  = personalmsgs[0]
+                pt['height'] = personalmsgs[0].height
+                pt['weight'] = personalmsgs[0].weight
                 pts.push(pt)
             } 
                 obj['pt'] = pts
