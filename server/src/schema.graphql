@@ -38,6 +38,7 @@ phonenumber:String
 worktimes:Int
 height:Int
 weight:Int
+ptorderstate:Int
 }
 
 type Originorder{

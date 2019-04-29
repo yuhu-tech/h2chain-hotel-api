@@ -1,5 +1,5 @@
-var messages = require('../../../../grpc/examples/node/static_codegen/src/query_pb');
-var services = require('../../../../grpc/examples/node/static_codegen/src/query_grpc_pb');
+var messages = require('../../../../grpc/examples/node/static_codegen/hotelgrpc/query_pb');
+var services = require('../../../../grpc/examples/node/static_codegen/hotelgrpc/query_grpc_pb');
 var grpc = require('../../../../grpc/examples/node/node_modules/grpc');
 var client = new services.QueryOrderClient('127.0.0.1:50051', grpc.credentials.createInsecure())
 
@@ -125,6 +125,7 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
             try {
                 var request = new messages.QueryPTRequest();
                 request.setOrderid(res.orderOrigins[i].id);
+                console.log("orderid is "+res.orderOrigins[i].id)
                 request.setPtstatus(13);
                 var response = await queryPt(request)
                 obj['countyet'] = response.array[0].length
@@ -151,6 +152,13 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
                 var personalmsg  = personalmsgs[0]
                 pt['height'] = personalmsgs[0].height
                 pt['weight'] = personalmsgs[0].weight
+//here we retrieve ptorder state
+                var requestpt = new messages.QueryPTRequest();
+                requestpt.setPtid(ptid);
+                requestpt.setOrderid(res.orderOrigins[i].id)
+                client.queryPTOfOrder(request,function(err,response){
+                pt['ptorderstate'] = response.array[0][0][7]
+                });
                 pts.push(pt)
             } 
                 obj['pt'] = pts
