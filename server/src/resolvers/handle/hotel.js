@@ -26,7 +26,6 @@ function queryPt(request) {
 
 
 async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
-     console.log(orderid)
      try {
        var request = new messages.QueryRequest();
        if (orderid != null && orderid != undefined){
@@ -35,7 +34,6 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
        if (hotelid != null && hotelid != undefined){
          request.setHotelid(hotelid)
        }
-       console.log(datetime)
        if (datetime != null && datetime != undefined){
          request.setDate(datetime)
        }
@@ -61,7 +59,6 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
                     modifiedorderObj['changedfemale'] = res.orderOrigins[i].orderHotelModifies[j].count - res.orderOrigins[i].orderHotelModifies[j].countMale
                     modifiedorder.push(modifiedorderObj)
                 }
-
             }
 
             var originorder = {}
@@ -70,28 +67,53 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
             originorder['datetime'] = res.orderOrigins[i].datetime
             originorder['duration'] = res.orderOrigins[i].duration/3600
             originorder['mode'] = res.orderOrigins[i].mode
-            originorder['count'] = res.orderOrigins[i].count
-            //we judge if we will tranfer male and female number by the mode
-            if (res.orderOrigins[i].mode == 0 ){
-            originorder['male'] = 0
-            originorder['female'] = 0
-            } else { 
-            originorder['male'] = res.orderOrigins[i].countMale
-            originorder['female'] = res.orderOrigins[i].count - res.orderOrigins[i].countMale
-            }
             originorder['orderstate'] = res.orderOrigins[i].status - 1
+   
+         if (res.orderOrigins[i].orderAdviserModifies.length != 0){
+              if (res.orderOrigins[i].orderAdviserModifies[0].isFloat) {
+            //we judge if we will tranfer male and female number by the mode
+                if (res.orderOrigins[i].mode == 0 ){
+                  originorder['male'] = 0
+                  originorder['female'] = 0
+                  originorder['count'] = Math.ceil(res.orderOrigins[i].count*1.05)
+                  } else { 
+                      originorder['male'] = Math.ceil(res.orderOrigins[i].countMale*1.05)
+                      originorder['female'] = Math.ceil((res.orderOrigins[i].count - res.orderOrigins[i].countMale)*1.05)
+                      originorder['count'] = originorder['male'] + originorder['female']
+                        }
+                  } else {
+                      if (res.orderOrigins[i].mode == 0 ){
+                      originorder['male'] = 0
+                      originorder['female'] = 0
+                      originorder['count'] = res.orderOrigins[i].count
+                        } else { 
+                      originorder['male'] = res.orderOrigins[i].countMale
+                      originorder['female'] = res.orderOrigins[i].count - res.orderOrigins[i].countMale
+                      originorder['count'] = originorder['male'] + originorder['female']
+                       }
+                        }
+            } else 
+            {
+                      if (res.orderOrigins[i].mode == 0 ){
+                      originorder['male'] = 0
+                      originorder['female'] = 0
+                      originorder['count'] = res.orderOrigins[i].count
+                        } else { 
+                      originorder['male'] = res.orderOrigins[i].countMale
+                      originorder['female'] = res.orderOrigins[i].count - res.orderOrigins[i].countMale
+                      originorder['count'] = originorder['male'] + originorder['female']
+                       }
+
+           }
 
             var adviser = {}
             //we add retrieve adviserId here to implement more messsages such as phone and companyname
             var adviserId = res.orderOrigins[i].adviserId
             var users = await ctx.prismaHr.users({where:{id:adviserId}})
             var profiles = await ctx.prismaHr.profiles({where:{user:{id:users[0].id}}})
-            console.log(users)
-            console.log(profiles)
             adviser['name'] = users[0].name
             adviser['companyname'] = profiles[0].companyname
             adviser['phone'] = profiles[0].phone
-
             obj['modifiedorder'] = modifiedorder
             obj['originorder'] = originorder
             obj['adviser'] = adviser
@@ -139,9 +161,7 @@ async function HotelGetOrderList(ctx,hotelid,orderid,state,datetime) {
 
             orderList.push(obj)
         }
-      console.log(orderList)
       return orderList
-      //console.log(res.orderOrigins[0])
     } catch (error) {
         throw error
     }

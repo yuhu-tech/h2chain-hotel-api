@@ -26,6 +26,7 @@ const order = {
    },
   
   async modifyorder(parent,args,ctx,info){
+    console.log(args.modifiedorder)
     var request = new messages.ModifyRequest();
         request.setOrderid(args.modifiedorder.orderid);
         request.setDatechanged(args.modifiedorder.changeddatetime);
