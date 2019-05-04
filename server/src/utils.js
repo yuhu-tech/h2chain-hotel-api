@@ -1,27 +1,27 @@
 const jwt = require('jsonwebtoken')
-const config  = require('../conf/config')
+const config = require('../conf/config')
 const request = require('request')
 
 
 function getUserId(ctx) {
-  const Authorization = ctx.request.get('Authorization')
-  if (Authorization) {
-    const token = Authorization.replace('Bearer ', '')
-    const { userId } = jwt.verify(token, 'jwtsecret123')
-    return userId
-  }
+    const Authorization = ctx.request.get('Authorization')
+    if (Authorization) {
+        const token = Authorization.replace('Bearer ', '')
+        const { userId } = jwt.verify(token, 'jwtsecret123')
+        return userId
+    }
 
-  throw new AuthError()
+    throw new AuthError()
 }
 
 class AuthError extends Error {
-  constructor() {
-    super('Not authorized')
-  }
+    constructor() {
+        super('Not authorized')
+    }
 }
 
 function getOpenId(jsCode, num) {
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject) => {
         var appid = ''
         var secret = ''
         if (num === 1) {
@@ -45,7 +45,7 @@ function getOpenId(jsCode, num) {
                 //console.log(body)
                 const openid = JSON.parse(body).openid;
                 resolve(openid)
-            }else{
+            } else {
                 reject(error)
             }
         });
@@ -53,7 +53,7 @@ function getOpenId(jsCode, num) {
 }
 
 function getSessionKey(jsCode, num) {
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject) => {
         var appid = ''
         var secret = ''
         if (num === 1) {
@@ -77,7 +77,7 @@ function getSessionKey(jsCode, num) {
                 //console.log(body)
                 const sessionkey = JSON.parse(body).session_key;
                 resolve(session_key)
-            }else{
+            } else {
                 reject(error)
             }
         });
@@ -85,8 +85,8 @@ function getSessionKey(jsCode, num) {
 }
 
 module.exports = {
-  getUserId,
-  AuthError,
-  getOpenId,
-  getSessionKey
+    getUserId,
+    AuthError,
+    getOpenId,
+    getSessionKey
 }
