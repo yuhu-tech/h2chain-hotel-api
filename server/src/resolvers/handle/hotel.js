@@ -46,7 +46,9 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime) {
       var obj = {}
 
       var modifiedorder = []
+      var isModified = false
       if (res.orderOrigins[i].orderHotelModifies.length != 0) {
+	isModified = true
         for (var j = 0; j < res.orderOrigins[i].orderHotelModifies.length; j++) {
           var modifiedorderObj = {}
           modifiedorderObj['orderid'] = res.orderOrigins[i].id
@@ -150,20 +152,19 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime) {
           pt['height'] = personalmsgs[0].height
           pt['weight'] = personalmsgs[0].weight
           //here we retrieve ptorder state
-          request.setPtid(ptid);
-          request.setOrderid(res.orderOrigins[i].id)
-          responsept = await queryPt(request)
-          pt['ptorderstate'] = responsept.array[0][0][7]
+          pt['ptorderstate'] = response.array[0][k][7]
           pts.push(pt)
         }
         obj['pt'] = pts
-        console.log(obj['pt'])
       }
       catch (error) {
         throw error
       }
-
-      orderList.push(obj)
+      if (isModified === true){
+	orderList.unshift(obj)
+      }else {
+        orderList.push(obj)
+      }
     }
     return orderList
   } catch (error) {

@@ -1,5 +1,4 @@
 const { getUserId } = require('../utils')
-const { need, orderbyorderid, orderbydate, order2, order3, user } = require('./mock')
 const handles = require('../resolvers/handle/hotel')
 const query = {
   //my information and my profile
@@ -33,9 +32,14 @@ const query = {
 
   async search(parent, args, ctx, info) {
     const id = getUserId(ctx)
-    var result = handles.HotelGetOrderList(ctx, id, args.orderid, args.state, args.datetime)
-    return result
-
+    if (args.state == 12) {
+       todo =  await handles.HotelGetOrderList(ctx,id,args.orderid,1,args.datetime);
+       doing = await handles.HotelGetOrderList(ctx,id,args.orderid,2,args.datetime);
+       Array.prototype.push.apply(todo,doing)
+       return todo
+       } else {
+         return handles.HotelGetOrderList(ctx, id, args.orderid, args.state, args.datetime)
+       }
   },
 
   async searchptoforder(parent, args, ctx, info) {
