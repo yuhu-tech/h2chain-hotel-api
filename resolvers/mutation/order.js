@@ -7,7 +7,6 @@ const client = new services.MutationClient('119.3.106.151:50051', grpc.credentia
 const order = {
   async createorder(parent, args, ctx, info) {
     const id = getUserId(ctx) //retrieve userid to put it into hotelId
-    console.log(id)
     const users = await ctx.prismaHr.users({ where: { name: args.createorder.advisername } })
     var request = new messages.CreateRequest();
     request.setHotelid(id)  //hotelid can be received for ctx utils
@@ -19,12 +18,10 @@ const order = {
     request.setCountmale(args.createorder.male)
     request.setMode(args.createorder.mode)
     client.createOrder(request, function (err, response) {
-      console.log(response);
     });
   },
 
   async modifyorder(parent, args, ctx, info) {
-    console.log(args.modifiedorder)
     var request = new messages.ModifyRequest();
     request.setOrderid(args.modifiedorder.orderid);
     request.setDatechanged(args.modifiedorder.changeddatetime);
@@ -47,7 +44,6 @@ const order = {
     var request = new messages.CloseRequest();
     request.setOrderid(args.orderid)
     client.closeOrder(request, function (err, response) {
-      console.log(response);
     })
   }
 }

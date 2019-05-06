@@ -27,7 +27,6 @@ const auth = {
     //we will update wechat openid here
     try {
       wechat = await getOpenId(jscode, 1)
-      console.log(wechat)
       const thisuser = await ctx.prismaHotel.updateUser(
         {
           data: { wechat: wechat },
@@ -45,8 +44,6 @@ const auth = {
 
   async changepassword(parent, args, ctx, info) {
     const id = getUserId(ctx)
-    console.log(id);
-    console.log(args)
     const users = await ctx.prismaHotel.users({ where: { id } })
     if (!users) {
       throw new Error(`No such user found for email: ${email}`)

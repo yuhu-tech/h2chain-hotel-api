@@ -4,11 +4,8 @@ const query = {
   //my information and my profile
   async me(parent, args, ctx, info) {
     const id = getUserId(ctx)
-    console.log(id);
     const users = await ctx.prismaHotel.users({ where: { id } })
-    console.log(users[0])
     const profiles = await ctx.prismaHotel.profiles({ where: { user: { id: id } } })
-    console.log(profiles)
     var meResult = {
       id: users[0].id,
       name: users[0].name,
@@ -22,7 +19,6 @@ const query = {
   async need(parent, args, ctx, info) {
     const occupations = await ctx.prismaHotel.occupations()
     const advisers = await ctx.prismaHr.users()
-    console.log(occupations[0].occupations)
     var needResult = {
       occupations: occupations[0].occupations,
       advisers: advisers
