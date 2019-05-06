@@ -1,5 +1,5 @@
-const { getUserId } = require('../utils')
-const handles = require('../resolvers/handle/hotel')
+const { getUserId } = require('../../utils/utils')
+const handles = require('../handle/hotel')
 const query = {
   //my information and my profile
   async me(parent, args, ctx, info) {

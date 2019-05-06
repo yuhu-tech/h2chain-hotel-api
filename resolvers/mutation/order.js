@@ -1,9 +1,7 @@
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const { getUserId } = require('../../utils')
-const messages = require('../../../../grpc/examples/node/static_codegen/hotelgrpc/mutation_pb');
-const services = require('../../../../grpc/examples/node/static_codegen/hotelgrpc/mutation_grpc_pb');
-const grpc = require('../../../../grpc/examples/node/node_modules/grpc')
+const { getUserId } = require('../../utils/utils')
+const messages = require('../../grpc/mutation/mutation_pb');
+const services = require('../../grpc/mutation/mutation_grpc_pb');
+const grpc = require('grpc')
 const client = new services.MutationClient('127.0.0.1:50051', grpc.credentials.createInsecure());
 
 const order = {

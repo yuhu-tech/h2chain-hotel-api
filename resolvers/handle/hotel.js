@@ -1,6 +1,6 @@
-var messages = require('../../../../grpc/examples/node/static_codegen/hotelgrpc/query_pb');
-var services = require('../../../../grpc/examples/node/static_codegen/hotelgrpc/query_grpc_pb');
-var grpc = require('../../../../grpc/examples/node/node_modules/grpc');
+var messages = require('../../grpc/query/query_pb');
+var services = require('../../grpc/query/query_grpc_pb');
+var grpc = require('grpc');
 var client = new services.QueryOrderClient('127.0.0.1:50051', grpc.credentials.createInsecure())
 
 

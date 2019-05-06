@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { getUserId, getOpenId } = require('../../utils')
+const { getUserId, getOpenId } = require('../../utils/utils')
 
 const auth = {
   async signup(parent, args, ctx, info) {
