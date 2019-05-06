@@ -1,7 +1,7 @@
 type Query {
   me: User!
   need: Needs
-  search(orderid: String,state:Int,datetime:Int):[Order]
+  search(orderid: String,state:Int,datetime:Int,ptname:String):[Order]
   searchptoforder(orderid:String):[Order]
 }
 

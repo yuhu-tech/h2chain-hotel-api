@@ -33,12 +33,12 @@ const query = {
   async search(parent, args, ctx, info) {
     const id = getUserId(ctx)
     if (args.state == 12) {
-       todo =  await handles.HotelGetOrderList(ctx,id,args.orderid,1,args.datetime);
-       doing = await handles.HotelGetOrderList(ctx,id,args.orderid,2,args.datetime);
+       todo =  await handles.HotelGetOrderList(ctx,id,args.orderid,1,args.datetime,args.ptname);
+       doing = await handles.HotelGetOrderList(ctx,id,args.orderid,2,args.datetime,args.ptname);
        Array.prototype.push.apply(todo,doing)
        return todo
        } else {
-         return handles.HotelGetOrderList(ctx, id, args.orderid, args.state, args.datetime)
+         return handles.HotelGetOrderList(ctx, id, args.orderid, args.state, args.datetime,args.ptname)
        }
   },
 
