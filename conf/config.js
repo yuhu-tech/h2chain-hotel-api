@@ -26,7 +26,7 @@ const Secrets = {
 // 设置redis
 const RDS = {
     port: 6379,
-    host: '127.0.0.1',
+    host: '119.3.106.151',
     pwd: 'h2chain',
     opts: {
         auth_pass: 'h2chain'

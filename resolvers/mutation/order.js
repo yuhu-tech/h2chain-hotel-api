@@ -2,7 +2,7 @@ const { getUserId } = require('../../utils/utils')
 const messages = require('../../grpc/mutation/mutation_pb');
 const services = require('../../grpc/mutation/mutation_grpc_pb');
 const grpc = require('grpc')
-const client = new services.MutationClient('127.0.0.1:50051', grpc.credentials.createInsecure());
+const client = new services.MutationClient('119.3.106.151:50051', grpc.credentials.createInsecure());
 
 const order = {
   async createorder(parent, args, ctx, info) {
@@ -43,7 +43,7 @@ const order = {
 
 
   async closeorder(parent, args, ctx, info) {
-    var client = new services.MutationClient('127.0.0.1:50051', grpc.credentials.createInsecure());
+    var client = new services.MutationClient('119.3.106.151:50051', grpc.credentials.createInsecure());
     var request = new messages.CloseRequest();
     request.setOrderid(args.orderid)
     client.closeOrder(request, function (err, response) {
