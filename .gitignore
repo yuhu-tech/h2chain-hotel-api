@@ -1,3 +1,10 @@
+# tmp files
+*.swp
+*.swo
+
+#secrets
+config.js
+
 # Logs
 logs
 *.log
