@@ -1,7 +1,8 @@
 var messages = require('../../grpc/query/query_pb');
 var services = require('../../grpc/query/query_grpc_pb');
 var grpc = require('grpc');
-var client = new services.QueryOrderClient('119.3.106.151:50051', grpc.credentials.createInsecure())
+var config = require('../../conf/config')
+var client = new services.QueryOrderClient(config.localip, grpc.credentials.createInsecure())
 
 
 // 酒店端订单页面
