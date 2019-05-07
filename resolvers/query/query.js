@@ -37,6 +37,10 @@ const query = {
          return handles.HotelGetOrderList(ctx, id, args.orderid, args.state, args.datetime,args.ptname)
        }
   },
+  
+  async searchhistory(parent,args,ctx,info){
+    return handles.HotelSearchHistory(ctx,args.ptid)
+  },
 
   async searchptoforder(parent, args, ctx, info) {
     const id = getUsedId(ctx)

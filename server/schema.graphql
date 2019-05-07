@@ -3,8 +3,13 @@ type Query {
   need: Needs
   search(orderid: String,state:Int,datetime:Int,ptname:String):[Order]
   searchptoforder(orderid:String):[Order]
+  searchhistory(ptid:String!):[Workhistory]
 }
 
+type Workhistory{
+  occupation: String
+  hotelname: String
+}
 
 type Needs{
 occupations:[String]!
@@ -39,6 +44,7 @@ worktimes:Int
 height:Int
 weight:Int
 ptorderstate:Int
+workhours:Int
 }
 
 type Originorder{
