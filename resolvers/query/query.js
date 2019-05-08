@@ -29,17 +29,17 @@ const query = {
   async search(parent, args, ctx, info) {
     const id = getUserId(ctx)
     if (args.state == 12) {
-       todo =  await handles.HotelGetOrderList(ctx,id,args.orderid,1,args.datetime,args.ptname);
-       doing = await handles.HotelGetOrderList(ctx,id,args.orderid,2,args.datetime,args.ptname);
-       Array.prototype.push.apply(todo,doing)
-       return todo
-       } else {
-         return handles.HotelGetOrderList(ctx, id, args.orderid, args.state, args.datetime,args.ptname)
-       }
+      todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 1, args.datetime, args.ptname);
+      doing = await handles.HotelGetOrderList(ctx, id, args.orderid, 2, args.datetime, args.ptname);
+      Array.prototype.push.apply(todo, doing)
+      return todo
+    } else {
+      return handles.HotelGetOrderList(ctx, id, args.orderid, args.state, args.datetime, args.ptname)
+    }
   },
-  
-  async searchhistory(parent,args,ctx,info){
-    return handles.HotelSearchHistory(ctx,args.ptid)
+
+  async searchhistory(parent, args, ctx, info) {
+    return handles.HotelSearchHistory(ctx, args.ptid)
   },
 
   async searchptoforder(parent, args, ctx, info) {

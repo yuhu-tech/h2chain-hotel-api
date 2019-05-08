@@ -26,45 +26,45 @@ function queryPt(request) {
 
 
 function queryHistory(request) {
-    return new Promise((resolve, reject) => {
-        client.queryExperience(request, (err, date) => {
-            if (err) reject(err);
-            resolve(date);
-        })
+  return new Promise((resolve, reject) => {
+    client.queryExperience(request, (err, date) => {
+      if (err) reject(err);
+      resolve(date);
     })
+  })
 }
 
 async function HotelSearchHistory(ctx, ptid) {
-    var request = new messages.QueryExperienceRequest();
-    request.setPtid(ptid)
-    var response = await queryHistory(request)
-    var res = JSON.parse(response.array[0])
-    var history = []
-    if (res.orderOrigins.length < 5) {
-        var worked = {}
-        for (i = 0; i < res.orderOrigins.length; i++) {
-            //worked['hotelid'] = res.orderOrigins[i].hotelId;
-            worked['occupation'] = res.orderOrigins[i].job;
-            var users = await ctx.prismaHotel.users({ where: { id: res.orderOrigins[i].hotelId } })
-            var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: res.orderOrigins[i].hotelId } } })
-            worked['hotelname'] = profiles[0].name
-            history.push(worked)
-        }
-    } else {
-        var worked = {}
-        for (i = 0; i < 5; i++) {
-            //worked['hotelid'] = res.orderOrigins[i].hotelID;
-            worked['occupation'] = res.orderOrigins[i].job;
-            var users = await ctx.prismaHotel.users({ where: { id: res.orderOrigins[i].hotelId } })
-            var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: res.orderOrigins[i].hotelId } } })
-            worked['hotelname'] = profiles[0].name
-            history.push(worked)
-        }
+  var request = new messages.QueryExperienceRequest();
+  request.setPtid(ptid)
+  var response = await queryHistory(request)
+  var res = JSON.parse(response.array[0])
+  var history = []
+  if (res.orderOrigins.length < 5) {
+    var worked = {}
+    for (i = 0; i < res.orderOrigins.length; i++) {
+      //worked['hotelid'] = res.orderOrigins[i].hotelId;
+      worked['occupation'] = res.orderOrigins[i].job;
+      var users = await ctx.prismaHotel.users({ where: { id: res.orderOrigins[i].hotelId } })
+      var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: res.orderOrigins[i].hotelId } } })
+      worked['hotelname'] = profiles[0].name
+      history.push(worked)
     }
-    return history
+  } else {
+    var worked = {}
+    for (i = 0; i < 5; i++) {
+      //worked['hotelid'] = res.orderOrigins[i].hotelID;
+      worked['occupation'] = res.orderOrigins[i].job;
+      var users = await ctx.prismaHotel.users({ where: { id: res.orderOrigins[i].hotelId } })
+      var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: res.orderOrigins[i].hotelId } } })
+      worked['hotelname'] = profiles[0].name
+      history.push(worked)
+    }
+  }
+  return history
 }
 
-async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime,ptname) {
+async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime, ptname) {
   try {
     var request = new messages.QueryRequest();
     if (orderid != null && orderid != undefined) {
@@ -88,7 +88,7 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime,ptname) 
       var modifiedorder = []
       var isModified = false
       if (res.orderOrigins[i].orderHotelModifies.length != 0) {
-	isModified = true
+        isModified = true
         for (var j = 0; j < res.orderOrigins[i].orderHotelModifies.length; j++) {
           var modifiedorderObj = {}
           modifiedorderObj['orderid'] = res.orderOrigins[i].id
@@ -190,7 +190,7 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime,ptname) 
           pt['ptid'] = ptid
           pt['name'] = personalmsgs[0].name
           //TODO  if the ptname is not null and the pt['name'] not equals ptname, we will break it
-          if (ptname != null && ptname != undefined && pt['name'] != ptname) {break}
+          if (ptname != null && ptname != undefined && pt['name'] != ptname) { break }
           pt['idnumber'] = personalmsgs[0].idnumber
           pt['gender'] = personalmsgs[0].gender
           pt['wechatname'] = "mocked wechat id"
@@ -210,11 +210,11 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime,ptname) 
           //here we calculate the hours in working
           var workhours = 0
           for (var p = 0; p < resworktime.orderOrigins.length; p++) {
-              for (var q = 0; q < resworktime.orderOrigins[p].orderCandidates.length; q++) {
-                       if (resworktime.orderOrigins[p].orderCandidates[q].remark != null  && resworktime.orderOrigins[p].orderCandidates[q].remark.ptId === ptid) {
-                            workhours = workhours + resworktime.orderOrigins[p].orderCandidates[q].remark.endDate - resworktime.orderOrigins[p].orderCandidates[q].remark.startDate
-                  }
+            for (var q = 0; q < resworktime.orderOrigins[p].orderCandidates.length; q++) {
+              if (resworktime.orderOrigins[p].orderCandidates[q].remark != null && resworktime.orderOrigins[p].orderCandidates[q].remark.ptId === ptid) {
+                workhours = workhours + resworktime.orderOrigins[p].orderCandidates[q].remark.endDate - resworktime.orderOrigins[p].orderCandidates[q].remark.startDate
               }
+            }
           }
           pt['workhours'] = Math.round(workhours / 3600)
           pts.push(pt)
@@ -224,9 +224,9 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime,ptname) 
       catch (error) {
         throw error
       }
-      if (isModified === true){
-	orderList.unshift(obj)
-      }else {
+      if (isModified === true) {
+        orderList.unshift(obj)
+      } else {
         orderList.push(obj)
       }
     }
