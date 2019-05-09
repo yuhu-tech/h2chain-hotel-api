@@ -1,0 +1,141 @@
+type Query {
+  me: User!
+  need: Needs
+  search(orderid: String,state:Int,datetime:Int,ptname:String):[Order]
+  searchptoforder(orderid:String):[Order]
+  searchhistory(ptid:String!):[Workhistory]
+}
+
+type Workhistory{
+  occupation: String
+  hotelname: String
+}
+
+type Needs{
+occupations:[String]!
+advisers:[Adviser]!
+}
+
+type Adviser{
+name:String!
+phone:String
+companyname:String
+}
+
+type Order {
+adviser: Adviser!
+state : Int!
+originorder:Originorder!
+modifiedorder:[Modifiedorder]
+maleyet:Int!
+femaleyet:Int!
+countyet:Int!
+pt:[PtPayload]
+}
+
+type PtPayload{
+ptid:String
+name:String
+idnumber:String
+gender:Int
+wechatname:String
+phonenumber:String
+worktimes:Int
+height:Int
+weight:Int
+ptorderstate:Int
+workhours:Int
+}
+
+type Originorder{
+  orderid : String!
+  occupation: String!
+  datetime: Int!
+  duration: Int!
+  mode: Int!
+  count: Int!
+  male: Int!
+  female: Int!
+  hotelid: Int!
+  adviserid: Int!
+}
+
+input InputOriginorder {
+  orderid: String
+  occupation: String!
+  datetime: Int!
+  duration: Int!
+  mode: Int!
+  count: Int!
+  male: Int!
+  advisername: String!
+}
+
+input InputModifiedorder{
+  orderid: String
+  changeddatetime: Int!
+  changedduration: Int!
+  changedmode: Int!
+  changedcount: Int!
+  changedmale: Int!
+  changedfemale: Int!
+}
+
+type Modifiedorder{
+  orderid: String!
+  changeddatetime: Int!
+  changedduration: Int!
+  changedmode: Int!
+  changedcount: Int!
+  changedmale: Int!
+  changedfemale: Int!
+}
+
+
+
+type Mutation {
+  signup(email: String!, password: String!, name: String!): AuthPayload!
+  login(email: String!, password: String!,jscode:String!): AuthPayload!
+  changepassword(oldpassword: String!, newpassword: String!): CPwdPayload!
+  createorder(createorder:InputOriginorder!): OrderPayload
+  modifyorder(modifiedorder:InputModifiedorder!):OrderPayload
+  closeorder(orderid: String!):OrderPayload
+  updatewechat:Boolean
+}
+
+type OrderPayload {
+  orderid: String
+  error: Boolean
+}
+
+type CPwdPayload{
+  error : Boolean
+}
+
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password:String
+  profile:Profile
+}
+
+
+type Profile{
+  id: ID!
+  cover: [String]!
+  phone: String!
+  name: String!
+  occupation:String!
+  latitude: Float!
+  longitude:Float!
+  address:String!
+  introduction:String!
+}
+
