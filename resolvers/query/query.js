@@ -17,8 +17,21 @@ const query = {
 
   //needs for hotels to choose
   async need(parent, args, ctx, info) {
+    var advisers = []
     const occupations = await ctx.prismaHotel.occupations()
-    const advisers = await ctx.prismaHr.users()
+    const ads = await ctx.prismaHr.users()
+    for (i=0 ; i< ads.length; i++){
+     var adviser = {}
+     adviser['name']  = ads[i].name
+     adviser['id'] = ads[i].id
+     var profiles = await ctx.prismaHr.profiles({where:{user:{id:ads[i].id}}})
+     console.log(profiles)
+     adviser['phone'] = ads[i].phone
+     if (profiles[0] != null && profiles[0] != undefined){
+       adviser['companyname'] = profiles[0].companyname
+     }
+     advisers.push(adviser)
+    }
     var needResult = {
       occupations: occupations[0].occupations,
       advisers: advisers
