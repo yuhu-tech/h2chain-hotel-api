@@ -45,7 +45,7 @@ const order = {
     request.setCountmalechanged(args.modifiedorder.changedmale);
     request.setMode(args.modifiedorder.changedmode);
     client.modifyOrder(request, function (err, response) { console.log(response.array) })
-    
+
     //we need to change the state of pt to order to 4 for the pts to decide if they will go.
     var request = new messages.ModifyPtRequest();
     request.setOrderid(args.modifiedorder.orderid);       // OrderID 必传
@@ -66,16 +66,16 @@ const order = {
 
     // we will fetch adviserid and orderid and openid
     // send msg to adviser after modifying
-    var advisers = await ctx.prismaHr.users({where:{id: todo[0].originorder.adviserid }})
+    var advisers = await ctx.prismaHr.users({ where: { id: todo[0].originorder.adviserid } })
     var timekeyword = ''
     var countkeyword = ''
     var malekeyword = ''
     var femalekeyword = ''
-    var general  = '酒店端修改用工信息：'
-    if (todo[0].modifiedorder[0].changeddatetime != todo[0].originorder.datetime){
+    var general = '酒店端修改用工信息：'
+    if (todo[0].modifiedorder[0].changeddatetime != todo[0].originorder.datetime) {
       timekeyword = '用工时间由' + todo[0].originorder.datetime + '更改为' + todo[0].modifiedorder[0].changeddatetime
     }
-    if (todo[0].modifiedorder[0].changedcount !=  todo[0].originorder.count){
+    if (todo[0].modifiedorder[0].changedcount != todo[0].originorder.count) {
       countkeyword = '用工人数由' + todo[0].originorder.count + '更改为' + todo[0].modifiedorder[0].changedcount
     }
 
@@ -123,49 +123,58 @@ const order = {
     var client = new services.MutationClient(config.localip, grpc.credentials.createInsecure());
     var request = new messages.CloseRequest();
     request.setOrderid(args.orderid)
-    client.closeOrder(request, async function (err, response) {
-    // send msg to adviser after closing
     todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 3)
-    console.log(todo)
-    userId = todo[0].originorder.adviserid
-    var advisers =  await ctx.prismaHr.users({where:{id:todo[0].originorder.adviserid}})
-    var AdviserMsgData = {
-      userId: userId,
-      orderId: todo[0].originorder.orderid,
-      openId: advisers[0].wechat,
-      num: 6,
-      content: {
-        keyword1: '酒店已经关闭订单',
-        keyword2: '',
-        keyword3: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
+    client.closeOrder(request, async function (err, response) {
+      // send msg to adviser after closing
+      userId = todo[0].originorder.adviserid
+      var hotels = await ctx.prismaHotel.users({ where: { id: id } })
+      var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: id } } })
+      var name = hotels[0].name
+      var hotelname = profiles[0].name
+      var occupation = todo[0].originorder.occupation
+      //TODO we will change unixint to time here
+      if (todo[0].modifiedorder.length) {
+        datetime = todo[0].modifiedorder[0].changeddatetime
+      } else {
+        datetime = todo[0].originorder.datetime
       }
-    }
-    var sendARes = await sendtoa.sendTemplateMsgToAdviser(AdviserMsgData)
-    console.log('send msg to adviser after modifying', sendARes)
-    })
-
-    // send msg to registried pts after closing
-    // there should be a pt list , have to use for() to handle 
-    if (todo[0].pt.length) {
-      for (i = 0; i < todo[0].pt.length; i++) {
-        //to retrieve openid
-        var users = await ctx.prismaClient.users({ where: { user: { id: todo.pt[i].ptid } } })
-        var openId = users[0].wechat
-        var PtMsgData = {
-          userID: todo[0].pt[i].ptid,
-          orderId: args.modifiedorder.orderid,
-          openId: openId,
-          num: 3,
-          content: {
-            keyword1: '尊敬的客户，酒店已经关闭订单',
-            keyword2: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
-            keyword3: '',
-          }
+      var advisers = await ctx.prismaHr.users({ where: { id: todo[0].userId } })
+      var AdviserMsgData = {
+        userId: userId,
+        orderId: todo[0].originorder.orderid,
+        openId: advisers[0].wechat,
+        num: 6,
+        content: {
+          keyword1: hotelname + datetime + occupation,
+          keyword2: name,
+          keyword3: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
         }
-        var sendPRes = await sendtop.sendTemplateMsgToPt(PtMsgData)
-        console.log('send msg to pt after modifying', sendPRes)
       }
-    }
+      var sendARes = await sendtoa.sendTemplateMsgToAdviser(AdviserMsgData)
+      console.log('send msg to adviser after modifying', sendARes)
+      // send msg to registried pts after closing
+      // there should be a pt list , have to use for() to handle
+      if (todo[0].pt.length) {
+        for (i = 0; i < todo[0].pt.length; i++) {
+          //to retrieve openid
+          var users = await ctx.prismaClient.users({ where: { user: { id: todo[0].pt[i].ptid } } })
+          var openId = users[0].wechat
+          var PtMsgData = {
+            userID: todo[0].pt[i].ptid,
+            orderId: args.modifiedorder.orderid,
+            openId: openId,
+            num: 3,
+            content: {
+              keyword1: hotelname + datetime + occupation + "工作已被关闭",
+              keyword2: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
+              keyword3: '',
+            }
+          }
+          var sendPRes = await sendtop.sendTemplateMsgToPt(PtMsgData)
+          console.log('send msg to pt after modifying', sendPRes)
+        }
+      }
+    })
   }
 }
 
