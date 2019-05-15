@@ -110,6 +110,7 @@ async function sendTemplateMsgToAdviser(AdviserMsgData) {
             "form_id": getRes.formId,
             "data": data,
         };
+        console.log(JSON.stringify(requestData))
 
         // 发送模版消息
         await request({

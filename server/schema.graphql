@@ -97,9 +97,9 @@ type Mutation {
   signup(email: String!, password: String!, name: String!): AuthPayload!
   login(email: String!, password: String!,jscode:String!): AuthPayload!
   changepassword(oldpassword: String!, newpassword: String!): CPwdPayload!
-  createorder(createorder:InputOriginorder!): OrderPayload
-  modifyorder(modifiedorder:InputModifiedorder!):OrderPayload
-  closeorder(orderid: String!):OrderPayload
+  createorder(createorder:InputOriginorder!,formid:String!): OrderPayload
+  modifyorder(modifiedorder:InputModifiedorder!,formid:String!):OrderPayload
+  closeorder(orderid: String!,formid:String!):OrderPayload
   updatewechat:Boolean
 }
 

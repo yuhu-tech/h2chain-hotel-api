@@ -110,6 +110,8 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime, ptname)
       }
 
       var originorder = {}
+      originorder['hotelid'] = res.orderOrigins[i].hotelId
+      originorder['adviserid'] = res.orderOrigins[i].adviserId
       originorder['orderid'] = res.orderOrigins[i].id
       originorder['occupation'] = res.orderOrigins[i].job
       originorder['datetime'] = res.orderOrigins[i].datetime
@@ -189,7 +191,6 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime, ptname)
           var pt = {}
           pt['ptid'] = ptid
           pt['name'] = personalmsgs[0].name
-          //TODO  if the ptname is not null and the pt['name'] not equals ptname, we will break it
           if (ptname != null && ptname != undefined && pt['name'] != ptname) { break }
           pt['idnumber'] = personalmsgs[0].idnumber
           pt['gender'] = personalmsgs[0].gender

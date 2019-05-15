@@ -28,6 +28,8 @@
     "prisma": "^1.32.2",
     "prisma-binding": "^2.3.10",
     "prisma-client-lib": "^1.30.4",
-    "prisma-generate-schema": "^1.30.4"
+    "prisma-generate-schema": "^1.30.4",
+    "redis": "^2.8.0",
+    "silly-datetime": "^0.1.2"
   }
 }
