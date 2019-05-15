@@ -71,9 +71,16 @@ const order = {
     var countkeyword = ''
     var malekeyword = ''
     var femalekeyword = ''
-    var general = '酒店端修改用工信息：'
-    if (todo[0].modifiedorder[0].changeddatetime != todo[0].originorder.datetime) {
-      timekeyword = '用工时间由' + todo[0].originorder.datetime + '更改为' + todo[0].modifiedorder[0].changeddatetime
+    var general = '酒店修改用工信息：'
+    
+    var dateorigin = todo[0].originorder.datetime
+    var datemodified = todo[0].modifiedorder[0].changeddatetime
+    var fdateorigin  = new Date(dateorigin)
+    var fdatemodified = new Date(datemodified)
+
+    if (dateorigin != datemodified) {
+      timekeyword = '用工时间由' + fdateorigin.getFullYear()+'年'+fdateorigin.getMonth()+'月'+fdateorigin.getDate()+'日'+fdateorigin.getHours()+'时'
+                    + '更改为' + fdatemodified.getFullYear()+'年'+fdateorigin.getMonth()+'月'+fdateorigin.getDate()+'日'+fdateorigin.getHours()+'时'
     }
     if (todo[0].modifiedorder[0].changedcount != todo[0].originorder.count) {
       countkeyword = '用工人数由' + todo[0].originorder.count + '更改为' + todo[0].modifiedorder[0].changedcount
@@ -138,6 +145,7 @@ const order = {
       } else {
         datetime = todo[0].originorder.datetime
       }
+      var fdatetime = new Date(datetime)
       var advisers = await ctx.prismaHr.users({ where: { id: todo[0].userId } })
       var AdviserMsgData = {
         userId: userId,
@@ -145,7 +153,7 @@ const order = {
         openId: advisers[0].wechat,
         num: 6,
         content: {
-          keyword1: hotelname + datetime + occupation,
+          keyword1: hotelname + fdatetime.getFullYear()+'年'+fdatetime.getMonth()+'月'+fdatetime.getDate()+'日' + fdatetime.getHours()+'时的' + occupation + "工作已被关闭",
           keyword2: name,
           keyword3: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
         }
@@ -165,7 +173,7 @@ const order = {
             openId: openId,
             num: 3,
             content: {
-              keyword1: hotelname + datetime + occupation + "工作已被关闭",
+              keyword1: hotelname + fdatetime.getFullYear()+'年'+fdatetime.getMonth()+'月'+fdatetime.getDate()+'日' + fdatetime.getHours()+'时的' + occupation + "工作已被关闭",
               keyword2: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
               keyword3: '',
             }
