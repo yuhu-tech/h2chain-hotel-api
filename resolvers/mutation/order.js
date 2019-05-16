@@ -164,7 +164,7 @@ const order = {
       if (todo[0].pt.length) {
         for (i = 0; i < todo[0].pt.length; i++) {
           //to retrieve openid
-          var users = await ctx.prismaClient.users({ where: { user: { id: todo[0].pt[i].ptid } } })
+          var users = await ctx.prismaClient.users({ where: { id: todo[0].pt[i].ptid } } )
           var openId = users[0].wechat
           var PtMsgData = {
             userID: todo[0].pt[i].ptid,
