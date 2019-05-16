@@ -54,9 +54,7 @@ const order = {
     client.modifyPTOfOrder(request, async function (err, response) { console.log(response.array) })
 
     //to retrieve the whole meaage
-    todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 1)
-    doing = await handles.HotelGetOrderList(ctx, id, args.orderid, 2)
-    Array.prototype.push.apply(todo, doing)
+    todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 2)
     // set formid which is created when hotel modify order
     var userId = todo[0].originorder.hotelid
     var orderId = args.modifiedorder.orderid
