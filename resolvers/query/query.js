@@ -25,7 +25,6 @@ const query = {
      adviser['name']  = ads[i].name
      adviser['id'] = ads[i].id
      var profiles = await ctx.prismaHr.profiles({where:{user:{id:ads[i].id}}})
-     console.log(profiles)
      adviser['phone'] = ads[i].phone
      if (profiles[0] != null && profiles[0] != undefined){
        adviser['companyname'] = profiles[0].companyname
