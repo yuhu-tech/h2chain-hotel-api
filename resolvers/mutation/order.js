@@ -72,7 +72,6 @@ const order = {
     var malekeyword = ''
     var femalekeyword = ''
     var general = '酒店修改用工信息：'
-    
     var dateorigin = todo[0].originorder.datetime
     var datemodified = todo[0].modifiedorder[0].changeddatetime
     var fdateorigin  = new Date(dateorigin)
@@ -104,9 +103,9 @@ const order = {
     // send msg to registried pts after modifying
     // there should be a pt list , have to use for() to handle 
     if (todo[0].pt.length) {
-      for (i = 0; i < todo.pt.length; i++) {
+      for (i = 0; i < todo[0].pt.length; i++) {
         //to retrieve openid
-        var users = await ctx.prismaClient.users({ where: { user: { id: todo.pt[i].ptid } } })
+        var users = await ctx.prismaClient.users({ where: { user: { id: todo[0].pt[i].ptid } } })
         var openId = users[0].wechat
         var PtMsgData = {
           userId: todo[0].pt[i].ptid,
@@ -130,9 +129,9 @@ const order = {
     var client = new services.MutationClient(config.localip, grpc.credentials.createInsecure());
     var request = new messages.CloseRequest();
     request.setOrderid(args.orderid)
-    todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 3)
     client.closeOrder(request, async function (err, response) {
       // send msg to adviser after closing
+      todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 3)
       userId = todo[0].originorder.adviserid
       var hotels = await ctx.prismaHotel.users({ where: { id: id } })
       var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: id } } })
