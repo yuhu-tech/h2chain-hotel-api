@@ -168,7 +168,7 @@ const order = {
           var openId = users[0].wechat
           var PtMsgData = {
             userID: todo[0].pt[i].ptid,
-            orderId: args.modifiedorder.orderid,
+            orderId: args.orderid,
             openId: openId,
             num: 3,
             content: {
