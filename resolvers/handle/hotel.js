@@ -191,7 +191,7 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime, ptname)
           var pt = {}
           pt['ptid'] = ptid
           pt['name'] = personalmsgs[0].name
-          if (ptname != null && ptname != undefined && pt['name'].indexOf(ptname) != -1)  { break }
+          if (ptname != null && ptname != undefined && pt['name'].indexOf(ptname) == -1)  { break }
           pt['idnumber'] = personalmsgs[0].idnumber
           pt['gender'] = personalmsgs[0].gender
           pt['wechatname'] = "mocked wechat id"

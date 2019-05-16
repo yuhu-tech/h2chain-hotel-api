@@ -72,8 +72,8 @@ const order = {
     var general = '酒店修改用工信息：'
     var dateorigin = todo[0].originorder.datetime
     var datemodified = todo[0].modifiedorder[0].changeddatetime
-    var fdateorigin  = new Date(dateorigin)
-    var fdatemodified = new Date(datemodified)
+    var fdateorigin  = new Date(dateorigin*1000)
+    var fdatemodified = new Date(datemodified*1000)
 
     if (dateorigin != datemodified) {
       timekeyword = '用工时间由' + fdateorigin.getFullYear()+'年'+fdateorigin.getMonth()+'月'+fdateorigin.getDate()+'日'+fdateorigin.getHours()+'时'
@@ -144,7 +144,7 @@ const order = {
       } else {
         datetime = todo[0].originorder.datetime
       }
-      var fdatetime = new Date(datetime)
+      var fdatetime = new Date(datetime*1000)
       var advisers = await ctx.prismaHr.users({ where: { id: todo[0].userId } })
       var AdviserMsgData = {
         userId: userId,
@@ -158,7 +158,7 @@ const order = {
         }
       }
       var sendARes = await sendtoa.sendTemplateMsgToAdviser(AdviserMsgData)
-      console.log('send msg to adviser after modifying', sendARes)
+      console.log('send msg to adviser after closing', sendARes)
       // send msg to registried pts after closing
       // there should be a pt list , have to use for() to handle
       if (todo[0].pt.length) {
@@ -167,7 +167,7 @@ const order = {
           var users = await ctx.prismaClient.users({ where: { id: todo[0].pt[i].ptid } } )
           var openId = users[0].wechat
           var PtMsgData = {
-            userID: todo[0].pt[i].ptid,
+            userId: todo[0].pt[i].ptid,
             orderId: args.orderid,
             openId: openId,
             num: 3,
@@ -178,7 +178,7 @@ const order = {
             }
           }
           var sendPRes = await sendtop.sendTemplateMsgToPt(PtMsgData)
-          console.log('send msg to pt after modifying', sendPRes)
+          console.log('send msg to pt after closing', sendPRes)
         }
       }
     })
