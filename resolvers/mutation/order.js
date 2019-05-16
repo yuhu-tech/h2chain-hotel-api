@@ -44,15 +44,15 @@ const order = {
     request.setCountchanged(args.modifiedorder.changedcount);
     request.setCountmalechanged(args.modifiedorder.changedmale);
     request.setMode(args.modifiedorder.changedmode);
-    client.modifyOrder(request, function (err, response) { console.log(response.array) })
+    await client.modifyOrder(request, function (err, response) { console.log(response.array) })
 
     //we need to change the state of pt to order to 4 for the pts to decide if they will go.
     var request = new messages.ModifyPtRequest();
     request.setOrderid(args.modifiedorder.orderid);       // OrderID 必传
     request.setTargetstatus(4);                           // PT 目标状态 筛选条件，不同传 -1  
     request.setSourcestatus(1);                           // PT 原始状态
-    client.modifyPTOfOrder(request, async function (err, response) { console.log(response.array) })
-
+    client.modifyPTOfOrder(request, async function (err, response) {
+    console.log(response.array)
     //to retrieve the whole meaage
     todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 2)
     // set formid which is created when hotel modify order
@@ -97,6 +97,8 @@ const order = {
     }
     var sendARes = await sendtoa.sendTemplateMsgToAdviser(AdviserMsgData)
     console.log('send msg to adviser after modifying', sendARes)
+    })
+
 
     // send msg to registried pts after modifying
     // there should be a pt list , have to use for() to handle
