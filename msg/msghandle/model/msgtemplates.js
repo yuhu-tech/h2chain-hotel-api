@@ -20,7 +20,7 @@ const AdviserTIs = {
 const PtTIs = {
     msgOne:'brRgrT9zvQNCsL8PuMyMzFKnY1zrlAVIrsbP2LPGEj0',           //招聘动态提醒
     msgTwo:'4CztLnLxJKiXCAYAeo5KzfkhOw77qlICee_hVEY1GNc',           //应聘落选提醒
-    msgThree:'lr-0FFSD85D4-ENW7coan5tWGoTqnbyg-p5vF0w-Hec',         //订单关闭提醒
+    msgThree:'lr-0FFSD85D4-ENW7coanxzS3195Tw_evmWY-01wnlI',         //订单关闭提醒
 }
 
 
