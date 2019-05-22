@@ -173,8 +173,8 @@ const order = {
             num: 3,
             content: {
               keyword1: hotelname + fdatetime.getFullYear()+'年'+fdatetime.getMonth()+1 +'月'+fdatetime.getDate()+'日' + fdatetime.getHours()+'时的' + occupation + "工作已被关闭",
-              keyword2: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
-              keyword3: '',
+              keyword2: name,
+              keyword3: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
             }
           }
           var sendPRes = await sendtop.sendTemplateMsgToPt(PtMsgData)
