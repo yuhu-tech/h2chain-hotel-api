@@ -4,6 +4,28 @@
 var grpc = require('grpc');
 var mutation_pb = require('./mutation_pb.js');
 
+function serialize_CleanReply(arg) {
+  if (!(arg instanceof mutation_pb.CleanReply)) {
+    throw new Error('Expected argument of type CleanReply');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_CleanReply(buffer_arg) {
+  return mutation_pb.CleanReply.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_CleanRequest(arg) {
+  if (!(arg instanceof mutation_pb.CleanRequest)) {
+    throw new Error('Expected argument of type CleanRequest');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_CleanRequest(buffer_arg) {
+  return mutation_pb.CleanRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_CloseReply(arg) {
   if (!(arg instanceof mutation_pb.CloseReply)) {
     throw new Error('Expected argument of type CloseReply');
@@ -243,6 +265,18 @@ var MutationService = exports.MutationService = {
     requestDeserialize: deserialize_EditRequest,
     responseSerialize: serialize_EditReply,
     responseDeserialize: deserialize_EditReply,
+  },
+  // clean order
+  cleanOrder: {
+    path: '/Mutation/CleanOrder',
+    requestStream: false,
+    responseStream: false,
+    requestType: mutation_pb.CleanRequest,
+    responseType: mutation_pb.CleanReply,
+    requestSerialize: serialize_CleanRequest,
+    requestDeserialize: deserialize_CleanRequest,
+    responseSerialize: serialize_CleanReply,
+    responseDeserialize: deserialize_CleanReply,
   },
 };
 

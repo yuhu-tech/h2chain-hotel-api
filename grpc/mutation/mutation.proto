@@ -21,6 +21,11 @@ service Mutation {
     // close order
     rpc CloseOrder (CloseRequest) returns (CloseReply) {}
 
+    // edit order's pt remark
+    rpc EditRemark (EditRequest) returns (EditReply) {}
+
+    // clean order
+    rpc CleanOrder (CleanRequest) returns (CleanReply) {}
 }
 
 
@@ -106,3 +111,24 @@ message CloseReply {
     int32 closeResult = 1;
 }
 
+message EditRequest {
+    string orderId = 1;
+    string ptId = 2;
+    int32 startDate = 3;
+    int32 endDate = 4;
+    int32 realSalary = 5;
+    int32 isWorked = 6;
+    int32 type = 7;
+}
+
+message EditReply {
+    int32 editResult = 1;
+}
+
+message CleanRequest {
+    int32 date = 1;
+}
+
+message CleanReply {
+    string orderOrigins = 1;
+}
