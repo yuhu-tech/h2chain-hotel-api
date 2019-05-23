@@ -1,8 +1,13 @@
+const aesjs = require('aes-js')
+const config = require('../../../conf/config')
+
 function Str2Hex(str) {
     return new Promise((resolve, rejext) => {
-        var b = new Buffer(str)
-        var base64 = b.toString('base64')
-        var hex = '0x' + Buffer.from(base64, 'base64').toString('hex')
+        var textBytes = aesjs.utils.utf8.toBytes(str)
+        var aesCtr = new aesjs.ModeOfOperation.ctr(config.cryptoKey, new aesjs.Counter(config.cryptoCount));
+        var encryptedBytes = aesCtr.encrypt(textBytes);
+        var encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
+        hex = '0x' + encryptedHex
         resolve({ hex })
     })
 }
@@ -10,10 +15,11 @@ function Str2Hex(str) {
 function Hex2Str(hex) {
     return new Promise((resolve, rejext) => {
         var length = hex.length
-        var handledHex  = hex.slice(2,length)
-        var base64 = Buffer.from(handledHex, 'hex').toString('base64')
-        var buf = new Buffer(base64, 'base64')
-        var str = buf.toString()
+        var handledHex = hex.slice(2, length)
+        var encryptedBytes = aesjs.utils.hex.toBytes(handledHex);
+        var aesCtr = new aesjs.ModeOfOperation.ctr(config.cryptoKey, new aesjs.Counter(config.cryptoCount));
+        var decryptedBytes = aesCtr.decrypt(encryptedBytes);
+        var str = aesjs.utils.utf8.fromBytes(decryptedBytes);
         resolve({ str })
     })
 }
