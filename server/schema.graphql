@@ -101,6 +101,7 @@ type Mutation {
   modifyorder(modifiedorder:InputModifiedorder!,formid:String!):OrderPayload
   closeorder(orderid: String!,formid:String!):OrderPayload
   updatewechat:Boolean
+  clean:Boolean
 }
 
 type OrderPayload {
