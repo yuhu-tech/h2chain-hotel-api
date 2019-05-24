@@ -1,6 +1,7 @@
 const Chain = require("@alipay/mychain/index.node") //在 node 环境使用 TLS 协议
 const env = require("../env/env")
 const fs = require('fs')
+const path = require('path')
 const abi = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../contracts/MyToken_sol_MyToken.abi'), String))
 const contractName = 'MyTokenv2.0.3'
 // 使用新创建的key创建账户

@@ -1,5 +1,6 @@
 const fs = require('fs')
 const env = require('../env/env')
+const path = require('path')
 
 const abi = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../contracts/MyToken_sol_MyToken.abi'), String))
 const bytecode = fs.readFileSync(path.resolve(__dirname, '../../contracts/MyToken_sol_MyToken.bin'))
