@@ -68,9 +68,11 @@ const query = {
     var res = await utils.Hex2Str(result.originData)
     var res = JSON.parse(res.str)
     res['chainname'] = '蚂蚁区块链h2chain项目'
-    var constracts = await ctx.prismaHotel.contracts({where:{hash:args.txhash}})
+    var contracts = await ctx.prismaHotel.contracts({where:{hash:args.txhash}})
     res['blocknumber'] = contracts[0].blocknumber
     res['contractaddress'] = '0x3a758e6e367a783c7e845a91421b6def99972445bcf127bc258c145704953dc6'
+    res['hash'] = args.txhash
+
     return res
   }
 }

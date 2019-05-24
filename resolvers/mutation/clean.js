@@ -38,23 +38,28 @@ const clean = {
           var ptaddr = ptprofiles[0].ptadd// pt identity
           var ptname = ptprofiles[0].name
           var occupation = res.orderOrigins[i].job
-          if (res.orderOrigins[i].orderHotelMofies.length != 0){
+          if (res.orderOrigins[i].orderHotelModifies.length != 0){
             datetime = res.orderOrigins[i].orderHotelMofies[0].dateTime
           } else {
             datetime = res.orderOrigins[i].datetime
           }
-          var isrefused = orderOrigins[i].orderCandidates[j].ptStatus
+          var isrefused = res.orderOrigins[i].orderCandidates[j].ptStatus
           //to construct a certain kind of data to be shown on blockchain 
           var data = {
             hotelcer: hotelcer,
             hoteladdr: hoteladdr,
             hotelname: hotelname,
+            hotelhrname: hotelhrname,
+
             advisercer: advisercer,
             adviseraddr: adviseraddr,
             advisername: advisername,
+            adviserhrname: adviserhrname,
+
             ptcer: ptcer,
             ptaddr: ptaddr,
             ptname: ptname,
+
             occupation: occupation,
             datetime : datetime,
             isrefused: isrefused,

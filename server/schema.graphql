@@ -24,7 +24,7 @@ type BcPayload{
   blocknumber: Int
   hash:String
   occupation: String
-  datetime: String
+  datetime: Int
   isrefused: Int
   # to be continued
 }
