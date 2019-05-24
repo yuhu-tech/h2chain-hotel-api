@@ -76,6 +76,7 @@ function Transfer(from, publicKey, privateKey, to, value) {
 }
 
 function NativeDepositData(hashData) {
+  console.log("begin")
   return new Promise((resolve, reject) => {
     env.chain.ctr.NativeDepositData({
       from: 'qinxi',
@@ -88,7 +89,8 @@ function NativeDepositData(hashData) {
         reject(Error('native deposit data failed', err))
       } else {
         var txhash = data.txhash
-        resolve({txhash})
+        var blockNumber = data.block_number
+        resolve({txhash,blockNumber})
       }
     })
   })

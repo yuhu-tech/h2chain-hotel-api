@@ -1,10 +1,34 @@
 type Query {
   me: User!
   need: Needs
-  search(orderid: String,state:Int,datetime:Int,ptname:String):[Order]
-  searchptoforder(orderid:String):[Order]
-  searchhistory(ptid:String!):[Workhistory]
+  search(orderid: String, state: Int, datetime: Int, ptname: String): [Order]
+  searchptoforder(orderid: String): [Order]
+  searchhistory(ptid: String!): [Workhistory]
+  searchhash(txhash: String!): BcPayload
 }
+
+type BcPayload{
+  chainname:String
+  hotelcer: String
+  hoteladdr: String
+  hotelhrname: String
+  hotelname: String
+  advisercer: String
+  adviseraddr: String
+  advisername: String
+  adviserhrname: String
+  ptcer: String
+  ptaddr: String
+  ptname: String
+  contractaddress: String
+  blocknumber: Int
+  hash:String
+  occupation: String
+  datetime: String
+  isrefused: Int
+  # to be continued
+}
+
 
 type Workhistory{
   occupation: String
@@ -12,43 +36,44 @@ type Workhistory{
 }
 
 type Needs{
-occupations:[String]!
-advisers:[Adviser]!
+  occupations: [String]!
+  advisers: [Adviser]!
 }
 
 type Adviser{
-name:String!
-phone:String
-companyname:String
+  name: String!
+  phone: String
+  companyname: String
 }
 
 type Order {
-adviser: Adviser!
-state : Int!
-originorder:Originorder!
-modifiedorder:[Modifiedorder]
-maleyet:Int!
-femaleyet:Int!
-countyet:Int!
-pt:[PtPayload]
+  adviser: Adviser!
+  state: Int!
+  originorder: Originorder!
+  modifiedorder: [Modifiedorder]
+  maleyet: Int!
+  femaleyet: Int!
+  countyet: Int!
+  pt: [PtPayload]
 }
 
 type PtPayload{
-ptid:String
-name:String
-idnumber:String
-gender:Int
-wechatname:String
-phonenumber:String
-worktimes:Int
-height:Int
-weight:Int
-ptorderstate:Int
-workhours:Int
+  ptid: String
+  name: String
+  idnumber: String
+  gender: Int
+  wechatname: String
+  phonenumber: String
+  worktimes: Int
+  height: Int
+  weight: Int
+  ptorderstate: Int
+  workhours: Int
+  hash: String
 }
 
 type Originorder{
-  orderid : String!
+  orderid: String!
   occupation: String!
   datetime: Int!
   duration: Int!
@@ -95,13 +120,13 @@ type Modifiedorder{
 
 type Mutation {
   signup(email: String!, password: String!, name: String!): AuthPayload!
-  login(email: String!, password: String!,jscode:String!): AuthPayload!
+  login(email: String!, password: String!, jscode: String!): AuthPayload!
   changepassword(oldpassword: String!, newpassword: String!): CPwdPayload!
-  createorder(createorder:InputOriginorder!,formid:String!): OrderPayload
-  modifyorder(modifiedorder:InputModifiedorder!,formid:String!):OrderPayload
-  closeorder(orderid: String!,formid:String!):OrderPayload
-  updatewechat:Boolean
-  clean:Boolean
+  createorder(createorder: InputOriginorder!, formid: String!): OrderPayload
+  modifyorder(modifiedorder: InputModifiedorder!, formid: String!): OrderPayload
+  closeorder(orderid: String!, formid: String!): OrderPayload
+  updatewechat: Boolean
+  clean: Boolean
 }
 
 type OrderPayload {
@@ -110,7 +135,7 @@ type OrderPayload {
 }
 
 type CPwdPayload{
-  error : Boolean
+  error: Boolean
 }
 
 
@@ -123,8 +148,8 @@ type User {
   id: ID!
   name: String!
   email: String!
-  password:String
-  profile:Profile
+  password: String
+  profile: Profile
 }
 
 
@@ -133,10 +158,10 @@ type Profile{
   cover: [String]!
   phone: String!
   name: String!
-  occupation:String!
+  occupation: String!
   latitude: Float!
-  longitude:Float!
-  address:String!
-  introduction:String!
+  longitude: Float!
+  address: String!
+  introduction: String!
 }
 

@@ -1,4 +1,4 @@
-
+const path = require('path')
 const Chain = require("@alipay/mychain/index.node") //在node 环境使用 TLS 协议
 const fs = require("fs")
 const config = require("../../../../conf/config")
