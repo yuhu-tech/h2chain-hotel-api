@@ -1,6 +1,6 @@
 const env = require("../env/env")
 const fs = require('fs')
-const abi = JSON.parse(fs.readFileSync('../../contracts/MyToken_sol_MyToken.abi', String))
+const abi = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../contracts/MyToken_sol_MyToken.abi'), String))
 const contractName = 'MyTokenv2.0.3'
 
 

@@ -3,7 +3,7 @@ const Chain = require("@alipay/mychain/index.node") //在node 环境使用 TLS �
 const fs = require("fs")
 const config = require("../../../../conf/config")
 
-const accountKey = fs.readFileSync("../../certs/user.pem", { encoding: "utf8" })
+const accountKey = fs.readFileSync(path.resolve(__dirname, "../../certs/user.pem"), { encoding: "utf8" })
 const accountPassword = config.accountPassword  //需要替换为自定义的 user.pem 密码
 const keyInfo = Chain.utils.getKeyInfo(accountKey, accountPassword)
 
@@ -14,9 +14,9 @@ const opt = {
   host: '47.102.108.6',    // 目标区块链网络节点的 IP
   port: 18130,             // 端口号
   timeout: 30000,          // 连接超时时间配置
-  cert: fs.readFileSync("../../certs/client.crt", { encoding: "utf8" }),        // 证书请求文件，与 
-  ca: fs.readFileSync("../../certs/ca.crt", { encoding: "utf8" }),              // 合约链的认证CA 平台申请 
-  key: fs.readFileSync("../../certs/client.key", { encoding: "utf8" }),         // RSA秘钥 平台申请
+  cert: fs.readFileSync(path.resolve(__dirname, "../../certs/client.crt"), { encoding: "utf8" }),        // 证书请求文件，与 
+  ca: fs.readFileSync(path.resolve(__dirname, "../../certs/ca.crt"), { encoding: "utf8" }),              // 合约链的认证CA 平台申请 
+  key: fs.readFileSync(path.resolve(__dirname, "../../certs/client.key"), { encoding: "utf8" }),         // RSA秘钥 平台申请
   userPublicKey: keyInfo.publicKey,            // 账户公钥
   userPrivateKey: keyInfo.privateKey,          // 账户私钥
   userRecoverPublicKey: keyInfo.publicKey,     // 恢复账户公钥
