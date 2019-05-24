@@ -2,6 +2,7 @@
 const Chain = require("@alipay/mychain/index.node") //在node 环境使用 TLS 协议
 const fs = require("fs")
 const config = require("../../../../conf/config")
+const path = require('path')
 
 const accountKey = fs.readFileSync(path.resolve(__dirname, "../../certs/user.pem"), { encoding: "utf8" })
 const accountPassword = config.accountPassword  //需要替换为自定义的 user.pem 密码

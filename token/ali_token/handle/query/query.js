@@ -1,5 +1,6 @@
 const env = require("../env/env")
 const fs = require('fs')
+const path = require('path')
 const abi = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../contracts/MyToken_sol_MyToken.abi'), String))
 const contractName = 'MyTokenv2.0.3'
 
@@ -19,6 +20,7 @@ function QueryAccount(userId) {
     })
 }
 
+// 调用合约函数，查询合约token发布总量
 function QueryTotalSuppy() {
     return new Promise((resolve, reject) => {
         let myContract = env.chain.ctr.contract(contractName, abi)
@@ -36,6 +38,7 @@ function QueryTotalSuppy() {
     })
 }
 
+// 调用合约函数，查询账户余额
 function QueryBalanceOf(userId) {
     return new Promise((resolve, reject) => {
         let myContract = env.chain.ctr.contract(contractName, abi)
@@ -83,10 +86,27 @@ function QueryTransactionReceipt() {
     })
 }
 
+//查询合约地址
+function QueryContract(){
+    return new Promise((resolve,reject)=>{
+        env.chain.ctr.QueryContract({
+            from: contractName
+          }, (err, data) => {
+              if (err!=null||data.return_code !=0){
+                  reject(Error('query contract failed',err))
+              }else{
+                var identity = data.data.identity
+                resolve({identity})
+              }
+          })
+    })
+}
+
 module.exports = {
     QueryAccount,
     QueryTotalSuppy,
     QueryBalanceOf,
     QueryTransaction,
-    QueryTransactionReceipt
+    QueryTransactionReceipt,
+    QueryContract,
 }
