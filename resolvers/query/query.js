@@ -1,5 +1,7 @@
 const { getUserId } = require('../../utils/utils')
 const handles = require('../handle/hotel')
+const { QueryTransaction } = require('../../token/ali_token/handle/query/query')
+const utils = require('../../token/ali_token/utils/utils')
 const query = {
   //my information and my profile
   async me(parent, args, ctx, info) {
@@ -58,6 +60,20 @@ const query = {
     const id = getUsedId(ctx)
     var result = handles.HotelGetOrderList(args.orderid)
     return result
+  },
+
+
+  async searchhash(parent,args,ctx,info) {
+    var result  = await QueryTransaction(args.txhash)
+    var res = await utils.Hex2Str(result.originData)
+    var res = JSON.parse(res.str)
+    res['chainname'] = '蚂蚁区块链h2chain项目'
+    var contracts = await ctx.prismaHotel.contracts({where:{hash:args.txhash}})
+    res['blocknumber'] = contracts[0].blocknumber
+    res['contractaddress'] = '0x3a758e6e367a783c7e845a91421b6def99972445bcf127bc258c145704953dc6'
+    res['hash'] = args.txhash
+
+    return res
   }
 }
 module.exports = { query }

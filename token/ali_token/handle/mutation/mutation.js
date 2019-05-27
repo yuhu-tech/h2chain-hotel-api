@@ -78,6 +78,7 @@ function Transfer(from, publicKey, privateKey, to, value) {
 }
 
 function NativeDepositData(hashData) {
+  console.log("begin")
   return new Promise((resolve, reject) => {
     env.chain.ctr.NativeDepositData({
       from: 'qinxi',
