@@ -203,7 +203,9 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime, ptname)
           //here we retrieve ptorder state
           pt['ptorderstate'] = response.array[0][k][7]
           var contracts = ctx.prismaHotel.contracts({where:{AND:[{orderid:res.orderOrigins[i].id},{ptid:ptid}]}})
+          if ( contracts[0] != undefined ){
           pt['hash'] = contracts[0].hash
+          }
           //here is worktimes and workhours
           var requestworktime = new messages.QueryExperienceRequest()
           requestworktime.setPtid(ptid)

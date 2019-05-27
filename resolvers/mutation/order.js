@@ -9,6 +9,8 @@ const sendtop = require('../../msg/msghandle/sendmsg/ptmsg')
 const formid = require('../../msg/msghandle/formid/redis')
 const client = new services.MutationClient(config.localip, grpc.credentials.createInsecure());
 const handles = require('../handle/hotel')
+const utils = require('../../token/ali_token/utils/utils')
+const mutation = require('../../token/ali_token/handle/mutation/mutation')
 
 const order = {
   async createorder(parent, args, ctx, info) {
@@ -52,51 +54,51 @@ const order = {
     request.setTargetstatus(4);                           // PT 目标状态 筛选条件，不同传 -1  
     request.setSourcestatus(1);                           // PT 原始状态
     client.modifyPTOfOrder(request, async function (err, response) {
-    console.log(response.array)
-    //to retrieve the whole meaage
-    todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 2)
-    // set formid which is created when hotel modify order
-    var userId = todo[0].originorder.hotelid
-    var orderId = args.modifiedorder.orderid
-    var formId = args.formid
-    var setRes = await formid.setFormId(userId, orderId, formId)
-    console.log('set formid after modifying :', setRes)
+      console.log(response.array)
+      //to retrieve the whole meaage
+      todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 2)
+      // set formid which is created when hotel modify order
+      var userId = todo[0].originorder.hotelid
+      var orderId = args.modifiedorder.orderid
+      var formId = args.formid
+      var setRes = await formid.setFormId(userId, orderId, formId)
+      console.log('set formid after modifying :', setRes)
 
-    // we will fetch adviserid and orderid and openid
-    // send msg to adviser after modifying
-    var advisers = await ctx.prismaHr.users({ where: { id: todo[0].originorder.adviserid } })
-    var timekeyword = ''
-    var countkeyword = ''
-    var malekeyword = ''
-    var femalekeyword = ''
-    var general = '酒店修改用工信息：'
-    var dateorigin = todo[0].originorder.datetime
-    var datemodified = todo[0].modifiedorder[0].changeddatetime
-    var fdateorigin  = new Date(dateorigin*1000)
-    var fdatemodified = new Date(datemodified*1000)
+      // we will fetch adviserid and orderid and openid
+      // send msg to adviser after modifying
+      var advisers = await ctx.prismaHr.users({ where: { id: todo[0].originorder.adviserid } })
+      var timekeyword = ''
+      var countkeyword = ''
+      var malekeyword = ''
+      var femalekeyword = ''
+      var general = '酒店修改用工信息：'
+      var dateorigin = todo[0].originorder.datetime
+      var datemodified = todo[0].modifiedorder[0].changeddatetime
+      var fdateorigin = new Date(dateorigin * 1000)
+      var fdatemodified = new Date(datemodified * 1000)
 
-    if (dateorigin != datemodified) {
-      timekeyword = '用工时间由' + fdateorigin.getFullYear()+'年'+(fdateorigin.getMonth()+1) +'月'+fdateorigin.getDate()+'日'+fdateorigin.getHours()+'时'
-                    + '  更改为  ' + fdatemodified.getFullYear()+'年'+(fdatemodified.getMonth()+1) +'月'+fdatemodified.getDate()+'日'+fdatemodified.getHours()+'时'
-    }
-    if (todo[0].modifiedorder[0].changedcount != todo[0].originorder.count) {
-      countkeyword = '用工人数由' + todo[0].originorder.count + '更改为' + todo[0].modifiedorder[0].changedcount
-    }
-
-    //compose AdviserMsgData
-    var AdviserMsgData = {
-      userId: todo[0].originorder.adviserid, //向谁发送？
-      orderId: args.modifiedorder.orderid,//这个orderid
-      openId: advisers[0].wechat, //向谁发送的openid
-      num: 4,
-      content: {
-        keyword1: general + timekeyword + countkeyword,
-        keyword2: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
-        keyword3: '',
+      if (dateorigin != datemodified) {
+        timekeyword = '用工时间由' + fdateorigin.getFullYear() + '年' + (fdateorigin.getMonth() + 1) + '月' + fdateorigin.getDate() + '日' + fdateorigin.getHours() + '时'
+          + '  更改为  ' + fdatemodified.getFullYear() + '年' + (fdatemodified.getMonth() + 1) + '月' + fdatemodified.getDate() + '日' + fdatemodified.getHours() + '时'
       }
-    }
-    var sendARes = await sendtoa.sendTemplateMsgToAdviser(AdviserMsgData)
-    console.log('send msg to adviser after modifying', sendARes)
+      if (todo[0].modifiedorder[0].changedcount != todo[0].originorder.count) {
+        countkeyword = '用工人数由' + todo[0].originorder.count + '更改为' + todo[0].modifiedorder[0].changedcount
+      }
+
+      //compose AdviserMsgData
+      var AdviserMsgData = {
+        userId: todo[0].originorder.adviserid, //向谁发送？
+        orderId: args.modifiedorder.orderid,//这个orderid
+        openId: advisers[0].wechat, //向谁发送的openid
+        num: 4,
+        content: {
+          keyword1: general + timekeyword + countkeyword,
+          keyword2: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
+          keyword3: '',
+        }
+      }
+      var sendARes = await sendtoa.sendTemplateMsgToAdviser(AdviserMsgData)
+      console.log('send msg to adviser after modifying', sendARes)
     })
 
 
@@ -105,7 +107,7 @@ const order = {
     if (todo[0].pt.length) {
       for (i = 0; i < todo[0].pt.length; i++) {
         //to retrieve openid
-        var users = await ctx.prismaClient.users({ where:  { id: todo[0].pt[i].ptid } } )
+        var users = await ctx.prismaClient.users({ where: { id: todo[0].pt[i].ptid } })
         var openId = users[0].wechat
         var PtMsgData = {
           userId: todo[0].pt[i].ptid,
@@ -131,20 +133,20 @@ const order = {
     request.setOrderid(args.orderid)
     client.closeOrder(request, async function (err, response) {
       // send msg to adviser after closing
-      todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 3)
+      const todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 3)
+      console.log(JSON.stringify(todo))
       userId = todo[0].originorder.adviserid
       var hotels = await ctx.prismaHotel.users({ where: { id: id } })
       var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: id } } })
       var name = hotels[0].name
       var hotelname = profiles[0].name
       var occupation = todo[0].originorder.occupation
-      //TODO we will change unixint to time here
       if (todo[0].modifiedorder.length) {
         datetime = todo[0].modifiedorder[0].changeddatetime
       } else {
         datetime = todo[0].originorder.datetime
       }
-      var fdatetime = new Date(datetime*1000)
+      var fdatetime = new Date(datetime * 1000)
       var advisers = await ctx.prismaHr.users({ where: { id: todo[0].userId } })
       var AdviserMsgData = {
         userId: userId,
@@ -152,7 +154,7 @@ const order = {
         openId: advisers[0].wechat,
         num: 6,
         content: {
-          keyword1: hotelname + fdatetime.getFullYear()+'年'+(fdatetime.getMonth()+1) +'月'+fdatetime.getDate()+'日' + fdatetime.getHours()+'时的' + occupation + "工作已被关闭",
+          keyword1: hotelname + fdatetime.getFullYear() + '年' + (fdatetime.getMonth() + 1) + '月' + fdatetime.getDate() + '日' + fdatetime.getHours() + '时的' + occupation + "工作已被关闭",
           keyword2: name,
           keyword3: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
         }
@@ -164,7 +166,7 @@ const order = {
       if (todo[0].pt.length) {
         for (i = 0; i < todo[0].pt.length; i++) {
           //to retrieve openid
-          var users = await ctx.prismaClient.users({ where: { id: todo[0].pt[i].ptid } } )
+          var users = await ctx.prismaClient.users({ where: { id: todo[0].pt[i].ptid } })
           var openId = users[0].wechat
           var PtMsgData = {
             userId: todo[0].pt[i].ptid,
@@ -172,7 +174,7 @@ const order = {
             openId: openId,
             num: 3,
             content: {
-              keyword1: hotelname + fdatetime.getFullYear()+'年'+(fdatetime.getMonth()+1) +'月'+fdatetime.getDate()+'日' + fdatetime.getHours()+'时的' + occupation + "工作已被关闭",
+              keyword1: hotelname + fdatetime.getFullYear() + '年' + (fdatetime.getMonth() + 1) + '月' + fdatetime.getDate() + '日' + fdatetime.getHours() + '时的' + occupation + "工作已被关闭",
               keyword2: name,
               keyword3: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
             }
@@ -181,6 +183,86 @@ const order = {
           console.log('send msg to pt after closing', sendPRes)
         }
       }
+
+      // hotel msg
+      var hotelprofiles = await ctx.prismaHotel.profiles({ where: { user: { id: id } } })
+      var hotelcer = hotelprofiles[0].hotelcer
+      var hoteladdr = hotelprofiles[0].hoteladd
+      var hotelname = hotelprofiles[0].name
+      var hotelusers = await ctx.prismaHotel.users({ where: { id: id } })
+      var hotelhrname = hotelusers[0].name
+      // adviser msg
+      console.log("todo[0] is "+ JSON.stringify(todo[0]))
+      var adviserprofiles = await ctx.prismaHr.profiles({ where: { user: { id: todo[0].originorder.adviserid } } })
+      var advisercer = adviserprofiles[0].advisercer
+      var adviseraddr = adviserprofiles[0].adviseradd
+      var advisername = adviserprofiles[0].companyname
+      var adviserusers = await ctx.prismaHr.users({ where: { id: todo[0].originorder.adviserid } })
+      var adviserhrname = adviserusers[0].name
+      // pt msg
+      console.log("todo[0] is "+ JSON.stringify(todo[0]))
+      if (todo[0].pt.length) {
+        for (j = 0; j < todo[0].pt.length; j++) {
+          var ptprofiles = await ctx.prismaClient.personalmsgs({ where: { user: { id: todo[0].pt[j].ptid } } })
+          var ptcer = ptprofiles[0].idnumber// pt id card number
+          var ptaddr = ptprofiles[0].ptadd// pt identity
+          var ptname = ptprofiles[0].name
+          var occupation = todo[0].originorder.occupation
+          if (todo[0].modifiedorder.length) {
+            datetime = todo[0].modifiedorder[0].changeddatetime
+          } else {
+            datetime = todo[0].originorder.datetime
+          }
+          var isrefused = todo[0].pt.ptorderstate
+          //now we set on chain
+          var data = {
+            hotelcer: hotelcer,
+            hoteladdr: hoteladdr,
+            hotelname: hotelname,
+            hotelhrname: hotelhrname,
+
+            advisercer: advisercer,
+            adviseraddr: adviseraddr,
+            advisername: advisername,
+            adviserhrname: adviserhrname,
+
+            ptcer: ptcer,
+            ptaddr: ptaddr,
+            ptname: ptname,
+
+            occupation: occupation,
+            datetime: datetime,
+            isrefused: isrefused,
+          }
+          var dataStr = JSON.stringify(data)
+          var hashData = await utils.Str2Hex(dataStr)
+          var result = await mutation.NativeDepositData(hashData.hex)
+          //to save the data to local
+          var contract = await ctx.prismaHotel.createContract({
+            hotelid: id,
+            adviserid: todo[0].originorder.adviserid,
+            ptid: todo[0].pt[j].ptid,
+            hash: result.txhash,
+            blocknumber: result.blockNumber
+          })
+
+          if ((isrefused == 1 || isrefused == 3)) {
+            //TODO 备注里查找未参加工作的也不送
+            result = await Issue(ptprofiles[0].ptadd, 200)
+            if (result.output == true) {
+              var finishwork = ctx.prismaHotel.createTx({
+                from: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
+                to: ptprofiles[0].ptadd,
+                value: 200,
+                hash: result.txhash,
+                reason: "完成订单",
+                timestamp: math.round(Date.now() / 1000)
+              })
+            }
+          }
+        }
+      }
+
     })
   }
 }
