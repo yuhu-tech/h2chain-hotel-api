@@ -16,7 +16,7 @@ async function clean() {
   console.log("function begin")
   var client = new services.MutationClient(config.localip, grpc.credentials.createInsecure());
   var request = new messages.CleanRequest();
-  var timenow = Math.round(Date.now() / 1000) + 86400 * 3
+  var timenow = math.round(Date.now() / 1000)
   console.log(timenow)
   request.setDate(timenow)       // 填入当前时间 unix
   client.cleanOrder(request, async function (err, response) {
@@ -77,10 +77,12 @@ async function clean() {
           adviserid: res.orderOrigins[i].adviserId,
           ptid: res.orderOrigins[i].orderCandidates[j].ptId,
           hash: result.txhash,
-          blocknumber: result.blockNumber
+          blocknumber: result.blockNumber,
+          orderid : res.orderOrigins[i].id
         })
         //分发
         //记录
+        if (res.orderOrigins[i].orderCandidates[j].remark !=undefined){
         if ((isrefused == 1 || isrefused == 3) && res.orderOrigins[i].orderCandidates[j].remark.isWorked == 1) {
           //TODO 备注里查找未参加工作的也不送
           result = await mutation.Issue(ptprofiles[0].ptadd, 200)
@@ -94,6 +96,7 @@ async function clean() {
               timestamp: math.round(Date.now() / 1000)
             })
           }
+        }
         }
       }
     }

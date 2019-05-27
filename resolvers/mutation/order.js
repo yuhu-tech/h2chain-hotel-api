@@ -258,7 +258,8 @@ const order = {
             adviserid: todo[0].originorder.adviserid,
             ptid: todo[0].pt[j].ptid,
             hash: result.txhash,
-            blocknumber: result.blockNumber
+            blocknumber: result.blockNumber,
+            orderid : todo[0].originorder.orderid
           })
 
           var requestremark = new querymessages.QueryRemarkRequest()
