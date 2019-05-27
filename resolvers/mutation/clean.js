@@ -104,7 +104,7 @@ async function clean() {
 
 
 async function scheduleCronstyle() {
-  schedule.scheduleJob('59 * * * * *', function () {
+  schedule.scheduleJob('59 * * * * *', async function () {
       await clean()
   });
 }
