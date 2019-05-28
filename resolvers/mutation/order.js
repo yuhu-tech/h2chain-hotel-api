@@ -11,6 +11,21 @@ const client = new services.MutationClient(config.localip, grpc.credentials.crea
 const handles = require('../handle/hotel')
 const utils = require('../../token/ali_token/utils/utils')
 const mutation = require('../../token/ali_token/handle/mutation/mutation')
+const querymessages = require('../../grpc/query/query_pb');
+const queryservices = require('../../grpc/query/query_grpc_pb');
+const queryclient = new queryservices.QueryOrderClient(config.localip, grpc.credentials.createInsecure())
+const {Issue} = require('../../token/ali_token/handle/mutation/mutation')
+const math = require('math')
+
+
+function queryRemark(request) {
+  return new Promise((resolve, reject) => {
+      queryclient.queryRemark(request, (err, date) => {
+          if (err) reject(err);
+          resolve(date);
+      })
+  })
+}
 
 const order = {
   async createorder(parent, args, ctx, info) {
@@ -192,7 +207,7 @@ const order = {
       var hotelusers = await ctx.prismaHotel.users({ where: { id: id } })
       var hotelhrname = hotelusers[0].name
       // adviser msg
-      console.log("todo[0] is "+ JSON.stringify(todo[0]))
+      console.log("todo[0] is " + JSON.stringify(todo[0]))
       var adviserprofiles = await ctx.prismaHr.profiles({ where: { user: { id: todo[0].originorder.adviserid } } })
       var advisercer = adviserprofiles[0].advisercer
       var adviseraddr = adviserprofiles[0].adviseradd
@@ -200,7 +215,7 @@ const order = {
       var adviserusers = await ctx.prismaHr.users({ where: { id: todo[0].originorder.adviserid } })
       var adviserhrname = adviserusers[0].name
       // pt msg
-      console.log("todo[0] is "+ JSON.stringify(todo[0]))
+      console.log("todo[0] is " + JSON.stringify(todo[0]))
       if (todo[0].pt.length) {
         for (j = 0; j < todo[0].pt.length; j++) {
           var ptprofiles = await ctx.prismaClient.personalmsgs({ where: { user: { id: todo[0].pt[j].ptid } } })
@@ -213,7 +228,7 @@ const order = {
           } else {
             datetime = todo[0].originorder.datetime
           }
-          var isrefused = todo[0].pt.ptorderstate
+          var isrefused = todo[0].pt[j].ptorderstate
           //now we set on chain
           var data = {
             hotelcer: hotelcer,
@@ -243,26 +258,34 @@ const order = {
             adviserid: todo[0].originorder.adviserid,
             ptid: todo[0].pt[j].ptid,
             hash: result.txhash,
-            blocknumber: result.blockNumber
+            blocknumber: result.blockNumber,
+            orderid : todo[0].originorder.orderid
           })
 
-          if ((isrefused == 1 || isrefused == 3)) {
-            //TODO 备注里查找未参加工作的也不送
-            result = await Issue(ptprofiles[0].ptadd, 200)
-            if (result.output == true) {
-              var finishwork = ctx.prismaHotel.createTx({
-                from: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
-                to: ptprofiles[0].ptadd,
-                value: 200,
-                hash: result.txhash,
-                reason: "完成订单",
-                timestamp: math.round(Date.now() / 1000)
-              })
+          var requestremark = new querymessages.QueryRemarkRequest()
+          requestremark.setOrderid(todo[0].originorder.orderid)
+          requestremark.setPtid(todo[0].pt[j].ptid)
+          var responseremark = await queryRemark(requestremark)
+          var resremark = JSON.parse(responseremark.array[0])
+          if (resremark.orderCandidates[0].remark != undefined) {
+            if ((isrefused == 1 || isrefused == 3) && resremark.orderCandidates[0].remark.isWorked == 1) {
+              console.log("上链并赠送token")
+              result = await Issue(ptprofiles[0].ptadd, 200)
+              if (result.output == true) {
+                var finishwork = ctx.prismaHotel.createTx({
+                  from: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
+                  to: ptprofiles[0].ptadd,
+                  value: 200,
+                  hash: result.txhash,
+                  reason: "完成订单",
+                  timestamp: math.round(Date.now() / 1000)
+                })
+                console.log("上链成功！")
+              }
             }
           }
         }
       }
-
     })
   }
 }
