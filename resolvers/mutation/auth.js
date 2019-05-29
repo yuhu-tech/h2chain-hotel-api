@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { getUserId, getOpenId } = require('../../utils/utils')
-const { CreateAccount } = require('../../token/ali_token/handle/mutation/mutation')
-
+const { CreateAccount }  = require('../../token/ali_token/handle/mutation/mutation')
+const { QueryAccount } = require('../../token/ali_token/handle/query/query')
 const auth = {
   async signup(parent, args, ctx, info) {
     const password = await bcrypt.hash(args.password, 10)
@@ -50,6 +50,16 @@ const auth = {
           where: { id: profiles[0].id }
         }
       )
+      var identity = await QueryAccount(personalmsg.id)
+      var updateidentity = await ctx.prismaHotel.updatePersonalmsg(
+        {
+          data: {
+            ptadd : identity.identity
+          },
+          where: { id : personalmsg.id }
+        }
+      )
+      console.log("更新钱包信息成功")
     }
 
 
