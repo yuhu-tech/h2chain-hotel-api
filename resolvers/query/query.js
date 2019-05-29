@@ -17,6 +17,12 @@ const query = {
     return meResult
   },
 
+  async mywallet(parent,args,ctx,info){
+    var id = getUserId(ctx)
+    const profiles = await ctx.prismaHotel.profiles({where:{user:{id:id}}})
+    return profiles[0].hoteladd
+  },
+  
   //needs for hotels to choose
   async need(parent, args, ctx, info) {
     var advisers = []
