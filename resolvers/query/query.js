@@ -20,7 +20,10 @@ const query = {
   async mywallet(parent,args,ctx,info){
     var id = getUserId(ctx)
     const profiles = await ctx.prismaHotel.profiles({where:{user:{id:id}}})
-    return profiles[0].hoteladd
+    return {
+      hoteladdr: profiles[0].hoteladd,
+      balance: 0
+    }
   },
   
   //needs for hotels to choose
