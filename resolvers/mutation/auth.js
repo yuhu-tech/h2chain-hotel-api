@@ -38,20 +38,20 @@ const auth = {
       throw (error)
     }
     //we will createwallet if his privatekey and publickey is not null
-    /*
-    var profiles = await ctx.prismaHotel.profiles({where:{user:{id:user.id}}})
-      console.log(profiles[0].id)
-      var keys =  await CreateAccount(profiles[0].id)
+    var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: user.id } } })
+    if (profiles[0].hoteladd == null) {
+      var keys = await CreateAccount(profiles[0].id)
       var updatekeys = await ctx.prismaHotel.updateProfile(
         {
           data: {
-            privatekey:keys.privatekey,
-            publickey:keys.publickey,
+            privatekey: keys.privatekey,
+            publickey: keys.publickey,
           },
-          where: { id : profiles[0].id }
+          where: { id: profiles[0].id }
         }
       )
-      */
+    }
+
 
     return {
       token: jwt.sign({ userId: user.id }, 'jwtsecret123'),

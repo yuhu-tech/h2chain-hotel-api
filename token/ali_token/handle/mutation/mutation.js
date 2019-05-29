@@ -5,7 +5,6 @@ const path = require('path')
 const abi = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../contracts/MyToken_sol_MyToken.abi'), String))
 const contractName = 'MyTokenv2.0.3'
 // 使用新创建的key创建账户
-// to 
 
 function CreateAccount(userId) {
   return new Promise((resolve, reject) => {
