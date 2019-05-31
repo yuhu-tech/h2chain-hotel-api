@@ -50,8 +50,8 @@ const auth = {
           where: { id: profiles[0].id }
         }
       )
-      var identity = await QueryAccount(personalmsg.id)
-      var updateidentity = await ctx.prismaHotel.updatePersonalmsg(
+      var identity = await QueryAccount(profiles[0].id)
+      var updateidentity = await ctx.prismaHotel.updateProfile(
         {
           data: {
             ptadd : identity.identity

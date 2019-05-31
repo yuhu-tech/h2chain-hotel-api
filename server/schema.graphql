@@ -5,7 +5,7 @@ type Query {
   searchptoforder(orderid: String): [Order]
   searchhistory(ptid: String!): [Workhistory]
   searchhash(txhash: String!): BcPayload
-  mywallet(skip:Int!,time:Int): Walletmsg
+  mywallet(skip:Int,time:Int): Walletmsg
 }
 
 type Walletmsg{
