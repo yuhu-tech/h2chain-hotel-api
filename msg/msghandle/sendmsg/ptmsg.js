@@ -53,6 +53,9 @@ async function sendTemplateMsgToPt(PtMsgData) {
                     "keyword2": {
                         "value": PtMsgData.content.keyword2
                     },
+                    "keyword3": {
+                        "value": PtMsgData.content.keyword3
+                    },
                 }
                 break;
             default:
