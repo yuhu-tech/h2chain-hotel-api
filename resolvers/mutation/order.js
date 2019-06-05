@@ -230,6 +230,11 @@ const order = {
           }
           var isrefused = todo[0].pt[j].ptorderstate
           //now we set on chain
+          if ((isrefused == 1 || isrefused == 3) && resremark.orderCandidates[0].remark.isWorked == 1) {
+            var worked = 1
+          } else {
+            var worked = 2
+          } 
           var data = {
             hotelcer: hotelcer,
             hoteladdr: hoteladdr,
@@ -247,7 +252,7 @@ const order = {
 
             occupation: occupation,
             datetime: datetime,
-            isrefused: isrefused,
+            isrefused: worked,
           }
           var dataStr = JSON.stringify(data)
           var hashData = await utils.Str2Hex(dataStr)
