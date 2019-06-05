@@ -93,8 +93,8 @@ const order = {
       var fdatemodified = new Date(datemodified * 1000)
 
       if (dateorigin != datemodified) {
-        timekeyword = '用工时间由' + fdateorigin.getFullYear() + '年' + (fdateorigin.getMonth() + 1) + '月' + fdateorigin.getDate() + '日' + fdateorigin.getHours() + '时'
-          + '  更改为  ' + fdatemodified.getFullYear() + '年' + (fdatemodified.getMonth() + 1) + '月' + fdatemodified.getDate() + '日' + fdatemodified.getHours() + '时'
+        timekeyword = '用工时间由' + fdateorigin.getFullYear() + '年' + (fdateorigin.getMonth() + 1) + '月' + fdateorigin.getDate() + '日' + fdateorigin.getHours() + '时' + fdateorigin.getMinutes() + '分'
+          + '  更改为  ' + fdatemodified.getFullYear() + '年' + (fdatemodified.getMonth() + 1) + '月' + fdatemodified.getDate() + '日' + fdatemodified.getHours() + '时' + fdateorigin.getMinutes() + '分'
       }
       if (todo[0].modifiedorder[0].changedcount != todo[0].originorder.count) {
         countkeyword = '用工人数由' + todo[0].originorder.count + '更改为' + todo[0].modifiedorder[0].changedcount
@@ -169,7 +169,7 @@ const order = {
         openId: advisers[0].wechat,
         num: 6,
         content: {
-          keyword1: hotelname + fdatetime.getFullYear() + '年' + (fdatetime.getMonth() + 1) + '月' + fdatetime.getDate() + '日' + fdatetime.getHours() + '时的' + occupation + "工作已被关闭",
+          keyword1: hotelname + fdatetime.getFullYear() + '年' + (fdatetime.getMonth() + 1) + '月' + fdatetime.getDate() + '日' + fdatetime.getHours() + '时' + fdatetime.getMinutes()+'分的' + occupation + "工作已被关闭",
           keyword2: name,
           keyword3: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
         }
@@ -189,7 +189,7 @@ const order = {
             openId: openId,
             num: 3,
             content: {
-              keyword1: hotelname + fdatetime.getFullYear() + '年' + (fdatetime.getMonth() + 1) + '月' + fdatetime.getDate() + '日' + fdatetime.getHours() + '时的' + occupation + "工作已被关闭",
+              keyword1: hotelname + fdatetime.getFullYear() + '年' + (fdatetime.getMonth() + 1) + '月' + fdatetime.getDate() + '日' + fdatetime.getHours() + '时' + fdatetime.getMinutes() + '分的' + occupation + "工作已被关闭",
               keyword2: name,
               keyword3: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
             }
