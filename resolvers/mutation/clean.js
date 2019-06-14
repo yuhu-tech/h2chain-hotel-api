@@ -49,6 +49,12 @@ async function clean() {
         }
         var isrefused = res.orderOrigins[i].orderCandidates[j].ptStatus
         //to construct a certain kind of data to be shown on blockchain 
+        // 1 已经参加工作 2 没参加工作
+        if ((isrefused == 1 || isrefused == 3) && res.orderOrigins[i].orderCandidates[j].remark.isWorked == 1) {
+           var worked = 1
+        } else {
+           var worked = 2
+        }
         var data = {
           hotelcer: hotelcer,
           hoteladdr: hoteladdr,
@@ -66,7 +72,7 @@ async function clean() {
 
           occupation: occupation,
           datetime: datetime,
-          isrefused: isrefused,
+          isrefused: worked,
         }
         var dataStr = JSON.stringify(data)
         var hashData = await utils.Str2Hex(dataStr)
@@ -107,8 +113,8 @@ async function clean() {
 
 
 async function scheduleCronstyle() {
-  schedule.scheduleJob('59 * * * * *', async function () {
-      await clean()
+  schedule.scheduleJob('59 * 1 * * *', async function () {
+   //   await clean()
   });
 }
 

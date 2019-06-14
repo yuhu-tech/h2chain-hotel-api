@@ -69,7 +69,6 @@ const order = {
     request.setTargetstatus(4);                           // PT 目标状态 筛选条件，不同传 -1  
     request.setSourcestatus(1);                           // PT 原始状态
     client.modifyPTOfOrder(request, async function (err, response) {
-      console.log(response.array)
       //to retrieve the whole meaage
       todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 2)
       // set formid which is created when hotel modify order
@@ -77,7 +76,6 @@ const order = {
       var orderId = args.modifiedorder.orderid
       var formId = args.formid
       var setRes = await formid.setFormId(userId, orderId, formId)
-      console.log('set formid after modifying :', setRes)
 
       // we will fetch adviserid and orderid and openid
       // send msg to adviser after modifying
@@ -93,8 +91,8 @@ const order = {
       var fdatemodified = new Date(datemodified * 1000)
 
       if (dateorigin != datemodified) {
-        timekeyword = '用工时间由' + fdateorigin.getFullYear() + '年' + (fdateorigin.getMonth() + 1) + '月' + fdateorigin.getDate() + '日' + fdateorigin.getHours() + '时'
-          + '  更改为  ' + fdatemodified.getFullYear() + '年' + (fdatemodified.getMonth() + 1) + '月' + fdatemodified.getDate() + '日' + fdatemodified.getHours() + '时'
+        timekeyword = '用工时间由' + fdateorigin.getFullYear() + '年' + (fdateorigin.getMonth() + 1) + '月' + fdateorigin.getDate() + '日' + fdateorigin.getHours() + '时' + fdateorigin.getMinutes() + '分'
+          + '  更改为  ' + fdatemodified.getFullYear() + '年' + (fdatemodified.getMonth() + 1) + '月' + fdatemodified.getDate() + '日' + fdatemodified.getHours() + '时' + fdateorigin.getMinutes() + '分'
       }
       if (todo[0].modifiedorder[0].changedcount != todo[0].originorder.count) {
         countkeyword = '用工人数由' + todo[0].originorder.count + '更改为' + todo[0].modifiedorder[0].changedcount
@@ -113,7 +111,6 @@ const order = {
         }
       }
       var sendARes = await sendtoa.sendTemplateMsgToAdviser(AdviserMsgData)
-      console.log('send msg to adviser after modifying', sendARes)
     })
 
 
@@ -136,7 +133,6 @@ const order = {
           }
         }
         var sendPRes = await sendtop.sendTemplateMsgToPt(PtMsgData)
-        console.log('send msg to pt after modifying', sendPRes)
       }
     }
   },
@@ -149,7 +145,6 @@ const order = {
     client.closeOrder(request, async function (err, response) {
       // send msg to adviser after closing
       const todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 3)
-      console.log(JSON.stringify(todo))
       userId = todo[0].originorder.adviserid
       var hotels = await ctx.prismaHotel.users({ where: { id: id } })
       var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: id } } })
@@ -169,13 +164,12 @@ const order = {
         openId: advisers[0].wechat,
         num: 6,
         content: {
-          keyword1: hotelname + fdatetime.getFullYear() + '年' + (fdatetime.getMonth() + 1) + '月' + fdatetime.getDate() + '日' + fdatetime.getHours() + '时的' + occupation + "工作已被关闭",
+          keyword1: hotelname + fdatetime.getFullYear() + '年' + (fdatetime.getMonth() + 1) + '月' + fdatetime.getDate() + '日' + fdatetime.getHours() + '时' + fdatetime.getMinutes()+'分的' + occupation + "工作已被关闭",
           keyword2: name,
           keyword3: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
         }
       }
       var sendARes = await sendtoa.sendTemplateMsgToAdviser(AdviserMsgData)
-      console.log('send msg to adviser after closing', sendARes)
       // send msg to registried pts after closing
       // there should be a pt list , have to use for() to handle
       if (todo[0].pt.length) {
@@ -189,13 +183,12 @@ const order = {
             openId: openId,
             num: 3,
             content: {
-              keyword1: hotelname + fdatetime.getFullYear() + '年' + (fdatetime.getMonth() + 1) + '月' + fdatetime.getDate() + '日' + fdatetime.getHours() + '时的' + occupation + "工作已被关闭",
+              keyword1: hotelname + fdatetime.getFullYear() + '年' + (fdatetime.getMonth() + 1) + '月' + fdatetime.getDate() + '日' + fdatetime.getHours() + '时' + fdatetime.getMinutes() + '分的' + occupation + "工作已被关闭",
               keyword2: name,
               keyword3: sd.format(new Date(), 'YYYY/MM/DD HH:mm'),
             }
           }
           var sendPRes = await sendtop.sendTemplateMsgToPt(PtMsgData)
-          console.log('send msg to pt after closing', sendPRes)
         }
       }
 
@@ -207,7 +200,6 @@ const order = {
       var hotelusers = await ctx.prismaHotel.users({ where: { id: id } })
       var hotelhrname = hotelusers[0].name
       // adviser msg
-      console.log("todo[0] is " + JSON.stringify(todo[0]))
       var adviserprofiles = await ctx.prismaHr.profiles({ where: { user: { id: todo[0].originorder.adviserid } } })
       var advisercer = adviserprofiles[0].advisercer
       var adviseraddr = adviserprofiles[0].adviseradd
@@ -215,7 +207,6 @@ const order = {
       var adviserusers = await ctx.prismaHr.users({ where: { id: todo[0].originorder.adviserid } })
       var adviserhrname = adviserusers[0].name
       // pt msg
-      console.log("todo[0] is " + JSON.stringify(todo[0]))
       if (todo[0].pt.length) {
         for (j = 0; j < todo[0].pt.length; j++) {
           var ptprofiles = await ctx.prismaClient.personalmsgs({ where: { user: { id: todo[0].pt[j].ptid } } })
@@ -230,6 +221,11 @@ const order = {
           }
           var isrefused = todo[0].pt[j].ptorderstate
           //now we set on chain
+          if (isrefused == 1 || isrefused == 3){
+            var worked = 1
+          } else {
+            var worked = 2
+          } 
           var data = {
             hotelcer: hotelcer,
             hoteladdr: hoteladdr,
@@ -247,7 +243,7 @@ const order = {
 
             occupation: occupation,
             datetime: datetime,
-            isrefused: isrefused,
+            isrefused: worked,
           }
           var dataStr = JSON.stringify(data)
           var hashData = await utils.Str2Hex(dataStr)
