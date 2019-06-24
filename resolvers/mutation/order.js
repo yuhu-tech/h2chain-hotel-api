@@ -230,11 +230,19 @@ const order = {
           }
           var isrefused = todo[0].pt[j].ptorderstate
           //now we set on chain
+
+          var requestremark = new querymessages.QueryRemarkRequest()
+          requestremark.setOrderid(todo[0].originorder.orderid)
+          requestremark.setPtid(todo[0].pt[j].ptid)
+          var responseremark = await queryRemark(requestremark)
+          var resremark = JSON.parse(responseremark.array[0])
+
           if ((isrefused == 1 || isrefused == 3) && resremark.orderCandidates[0].remark.isWorked == 1) {
             var worked = 1
           } else {
             var worked = 2
-          } 
+          }
+
           var data = {
             hotelcer: hotelcer,
             hoteladdr: hoteladdr,
@@ -267,12 +275,7 @@ const order = {
             orderid : todo[0].originorder.orderid
           })
 
-          var requestremark = new querymessages.QueryRemarkRequest()
-          requestremark.setOrderid(todo[0].originorder.orderid)
-          requestremark.setPtid(todo[0].pt[j].ptid)
-          var responseremark = await queryRemark(requestremark)
-          var resremark = JSON.parse(responseremark.array[0])
-          if (resremark.orderCandidates[0].remark != undefined) {
+          if (resremark.orderCandidates[0].remark) {
             if ((isrefused == 1 || isrefused == 3) && resremark.orderCandidates[0].remark.isWorked == 1) {
               console.log("上链并赠送token")
               result = await Issue(ptprofiles[0].ptadd, 200)
