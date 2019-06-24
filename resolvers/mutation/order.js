@@ -149,7 +149,6 @@ const order = {
     client.closeOrder(request, async function (err, response) {
       // send msg to adviser after closing
       const todo = await handles.HotelGetOrderList(ctx, id, args.orderid, 3)
-      console.log(JSON.stringify(todo))
       userId = todo[0].originorder.adviserid
       var hotels = await ctx.prismaHotel.users({ where: { id: id } })
       var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: id } } })
@@ -207,7 +206,6 @@ const order = {
       var hotelusers = await ctx.prismaHotel.users({ where: { id: id } })
       var hotelhrname = hotelusers[0].name
       // adviser msg
-      console.log("todo[0] is " + JSON.stringify(todo[0]))
       var adviserprofiles = await ctx.prismaHr.profiles({ where: { user: { id: todo[0].originorder.adviserid } } })
       var advisercer = adviserprofiles[0].advisercer
       var adviseraddr = adviserprofiles[0].adviseradd
@@ -215,7 +213,6 @@ const order = {
       var adviserusers = await ctx.prismaHr.users({ where: { id: todo[0].originorder.adviserid } })
       var adviserhrname = adviserusers[0].name
       // pt msg
-      console.log("todo[0] is " + JSON.stringify(todo[0]))
       if (todo[0].pt.length) {
         for (j = 0; j < todo[0].pt.length; j++) {
           var ptprofiles = await ctx.prismaClient.personalmsgs({ where: { user: { id: todo[0].pt[j].ptid } } })
@@ -230,7 +227,12 @@ const order = {
           }
           var isrefused = todo[0].pt[j].ptorderstate
           //now we set on chain
-          if ((isrefused == 1 || isrefused == 3) && resremark.orderCandidates[0].remark.isWorked == 1) {
+          var requestremark = new querymessages.QueryRemarkRequest()
+          requestremark.setOrderid(todo[0].originorder.orderid)
+          requestremark.setPtid(todo[0].pt[j].ptid)
+          var responseremark = await queryRemark(requestremark)
+          var resremark = JSON.parse(responseremark.array[0])
+          if (isrefused == 1 || isrefused == 3){
             var worked = 1
           } else {
             var worked = 2
@@ -266,12 +268,7 @@ const order = {
             blocknumber: result.blockNumber,
             orderid : todo[0].originorder.orderid
           })
-
-          var requestremark = new querymessages.QueryRemarkRequest()
-          requestremark.setOrderid(todo[0].originorder.orderid)
-          requestremark.setPtid(todo[0].pt[j].ptid)
-          var responseremark = await queryRemark(requestremark)
-          var resremark = JSON.parse(responseremark.array[0])
+	  console.log("1234567890")
           if (resremark.orderCandidates[0].remark != undefined) {
             if ((isrefused == 1 || isrefused == 3) && resremark.orderCandidates[0].remark.isWorked == 1) {
               console.log("上链并赠送token")

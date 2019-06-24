@@ -113,8 +113,8 @@ async function clean() {
 
 
 async function scheduleCronstyle() {
-  schedule.scheduleJob('59 * 1 * * *', async function () {
-   //   await clean()
+  schedule.scheduleJob('59 59 23 * * *', async function () {
+      await clean()
   });
 }
 
