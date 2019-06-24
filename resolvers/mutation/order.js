@@ -45,6 +45,7 @@ const order = {
       var userId = id
       var orderId = response.array[0]
       var formId = args.formid
+      console.log('form id is ...' + formId )
       var setRes = await formid.setFormId(userId, orderId, formId)
       console.log('set formid after creating :', setRes)
     });

@@ -41,11 +41,13 @@ const auth = {
     var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: user.id } } })
     if (profiles[0].hoteladd == null) {
       var keys = await CreateAccount(profiles[0].id)
+      console.log(keys)
+     
       var updatekeys = await ctx.prismaHotel.updateProfile(
         {
           data: {
-            privatekey: keys.privatekey,
-            publickey: keys.publickey,
+            privatekey: keys.privateKey,
+            publickey: keys.publicKey,
           },
           where: { id: profiles[0].id }
         }
@@ -54,9 +56,9 @@ const auth = {
       var updateidentity = await ctx.prismaHotel.updateProfile(
         {
           data: {
-            ptadd : identity.identity
+            hoteladd : identity.identity
           },
-          where: { id : personalmsg.id }
+          where: { id : profiles[0].id }
         }
       )
       console.log("更新钱包信息成功")
