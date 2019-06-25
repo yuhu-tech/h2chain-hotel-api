@@ -233,7 +233,7 @@ const order = {
           requestremark.setPtid(todo[0].pt[j].ptid)
           var responseremark = await queryRemark(requestremark)
           var resremark = JSON.parse(responseremark.array[0])
-          if (isrefused == 1 || isrefused == 3){
+          if ((isrefused == 1 || isrefused == 3) && resremark.orderCandidates[0].remark.isWorked == 1) {
             var worked = 1
           } else {
             var worked = 2
@@ -269,7 +269,6 @@ const order = {
             blocknumber: result.blockNumber,
             orderid : todo[0].originorder.orderid
           })
-	  console.log("1234567890")
           if (resremark.orderCandidates[0].remark != undefined) {
             if ((isrefused == 1 || isrefused == 3) && resremark.orderCandidates[0].remark.isWorked == 1) {
               console.log("上链并赠送token")

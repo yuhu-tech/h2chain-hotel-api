@@ -41,8 +41,8 @@ async function HotelSearchHistory(ctx, ptid) {
   var res = JSON.parse(response.array[0])
   var history = []
   if (res.orderOrigins.length < 5) {
-    var worked = {}
     for (i = 0; i < res.orderOrigins.length; i++) {
+    var worked = {}
       //worked['hotelid'] = res.orderOrigins[i].hotelId;
       worked['occupation'] = res.orderOrigins[i].job;
       var users = await ctx.prismaHotel.users({ where: { id: res.orderOrigins[i].hotelId } })
@@ -51,8 +51,8 @@ async function HotelSearchHistory(ctx, ptid) {
       history.push(worked)
     }
   } else {
-    var worked = {}
     for (i = 0; i < 5; i++) {
+    var worked = {}
       //worked['hotelid'] = res.orderOrigins[i].hotelID;
       worked['occupation'] = res.orderOrigins[i].job;
       var users = await ctx.prismaHotel.users({ where: { id: res.orderOrigins[i].hotelId } })
