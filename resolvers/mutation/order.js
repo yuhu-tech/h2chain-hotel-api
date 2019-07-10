@@ -233,10 +233,11 @@ const order = {
           requestremark.setPtid(todo[0].pt[j].ptid)
           var responseremark = await queryRemark(requestremark)
           var resremark = JSON.parse(responseremark.array[0])
-          if ((isrefused == 1 || isrefused == 3) && resremark.orderCandidates[0].remark.isWorked == 1) {
-            var worked = 1
+          var onChain = 0
+          if ((isrefused == 1 || isrefused == 3)) {
+            onChain = 1
           } else {
-            var worked = 2
+            onChain = 2
           } 
           var data = {
             hotelcer: hotelcer,
@@ -269,9 +270,16 @@ const order = {
             blocknumber: result.blockNumber,
             orderid : todo[0].originorder.orderid
           })
-          if (resremark.orderCandidates[0].remark != undefined) {
-            if ((isrefused == 1 || isrefused == 3) && resremark.orderCandidates[0].remark.isWorked == 1) {
-              console.log("上链并赠送token")
+
+
+          var isWorked = 1
+
+          try {
+            isWorked = resremark.orderCandidates[0].remark.isWorked
+          } catch (err) { }
+
+          if ((onChain == 1 && isWorked == 1) {
+            console.log("上链并赠送token")
               result = await Issue(ptprofiles[0].ptadd, 200)
               if (result.output == true) {
                 var finishwork = ctx.prismaHotel.createTx({
