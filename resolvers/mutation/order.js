@@ -215,7 +215,8 @@ const order = {
             // pt msg
             if (todo[0].pt.length) {
                 for (j = 0; j < todo[0].pt.length; j++) {
-                    var ptprofiles = await ctx.prismaClient.personalmsgs({ where: { user: { id: todo[0].pt[j].ptid } } })
+                    var ptid = todo[0].pt[j].ptid
+                    var ptprofiles = await ctx.prismaClient.personalmsgs({ where: { user: { id: ptid } } })
                     var ptcer = ptprofiles[0].idnumber// pt id card number
                     var ptaddr = ptprofiles[0].ptadd// pt identity
                     var ptname = ptprofiles[0].name
@@ -229,7 +230,7 @@ const order = {
                     //now we set on chain
                     var requestremark = new querymessages.QueryRemarkRequest()
                     requestremark.setOrderid(todo[0].originorder.orderid)
-                    requestremark.setPtid(todo[0].pt[j].ptid)
+                    requestremark.setPtid(ptid)
                     var responseremark = await queryRemark(requestremark)
                     var resremark = JSON.parse(responseremark.array[0])
                     var onChain = 0
@@ -264,7 +265,7 @@ const order = {
                     var contract = await ctx.prismaHotel.createContract({
                         hotelid: id,
                         adviserid: todo[0].originorder.adviserid,
-                        ptid: todo[0].pt[j].ptid,
+                        ptid: ptid,
                         hash: result.txhash,
                         blocknumber: result.blockNumber,
                         orderid: todo[0].originorder.orderid
