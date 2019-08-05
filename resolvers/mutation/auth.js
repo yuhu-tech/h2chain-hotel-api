@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { getUserId, getOpenId } = require('../../utils/utils')
-
+const { CreateAccount }  = require('../../token/ali_token/handle/mutation/mutation')
+const { QueryAccount } = require('../../token/ali_token/handle/query/query')
 const auth = {
   async signup(parent, args, ctx, info) {
     const password = await bcrypt.hash(args.password, 10)
@@ -36,6 +37,32 @@ const auth = {
     } catch (error) {
       throw (error)
     }
+    //we will createwallet if his privatekey and publickey is not null
+    var profiles = await ctx.prismaHotel.profiles({ where: { user: { id: user.id } } })
+    if (profiles[0].hoteladd == null) {
+      var keys = await CreateAccount(profiles[0].id)
+      var updatekeys = await ctx.prismaHotel.updateProfile(
+        {
+          data: {
+            privatekey: keys.privatekey,
+            publickey: keys.publickey,
+          },
+          where: { id: profiles[0].id }
+        }
+      )
+      var identity = await QueryAccount(profiles[0].id)
+      var updateidentity = await ctx.prismaHotel.updateProfile(
+        {
+          data: {
+            ptadd : identity.identity
+          },
+          where: { id : personalmsg.id }
+        }
+      )
+      console.log("更新钱包信息成功")
+    }
+
+
     return {
       token: jwt.sign({ userId: user.id }, 'jwtsecret123'),
       user

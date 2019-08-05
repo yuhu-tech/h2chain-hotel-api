@@ -4,6 +4,7 @@
 
 #secrets
 config.js
+certs
 
 # Logs
 logs

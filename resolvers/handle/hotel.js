@@ -110,6 +110,8 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime, ptname)
       }
 
       var originorder = {}
+      originorder['hotelid'] = res.orderOrigins[i].hotelId
+      originorder['adviserid'] = res.orderOrigins[i].adviserId
       originorder['orderid'] = res.orderOrigins[i].id
       originorder['occupation'] = res.orderOrigins[i].job
       originorder['datetime'] = res.orderOrigins[i].datetime
@@ -189,8 +191,7 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime, ptname)
           var pt = {}
           pt['ptid'] = ptid
           pt['name'] = personalmsgs[0].name
-          //TODO  if the ptname is not null and the pt['name'] not equals ptname, we will break it
-          if (ptname != null && ptname != undefined && pt['name'] != ptname) { break }
+          if (ptname != null && ptname != undefined && pt['name'].indexOf(ptname) == -1)  { continue }
           pt['idnumber'] = personalmsgs[0].idnumber
           pt['gender'] = personalmsgs[0].gender
           pt['wechatname'] = "mocked wechat id"
@@ -201,6 +202,10 @@ async function HotelGetOrderList(ctx, hotelid, orderid, state, datetime, ptname)
           pt['weight'] = personalmsgs[0].weight
           //here we retrieve ptorder state
           pt['ptorderstate'] = response.array[0][k][7]
+          var contracts = await ctx.prismaHotel.contracts({where:{AND:[{orderid:res.orderOrigins[i].id},{ptid:ptid}]}})
+          if ( contracts[0] != undefined ){
+          pt['hash'] = contracts[0].hash
+          }
           //here is worktimes and workhours
           var requestworktime = new messages.QueryExperienceRequest()
           requestworktime.setPtid(ptid)
