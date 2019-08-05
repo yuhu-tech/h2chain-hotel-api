@@ -29,14 +29,16 @@ const query = {
   //needs for hotels to choose
   async need(parent, args, ctx, info) {
     var advisers = []
+    const id = getUserId(ctx)
     const occupations = await ctx.prismaHotel.occupations()
-    const ads = await ctx.prismaHr.users()
-    for (i=0 ; i< ads.length; i++){
+    const cooperations = await ctx.prismaHr.cooperations({where:{hotelid:id}})
+    for (i=0 ; i< cooperations.length; i++){
+     const ad = await ctx.prismaHr.user({id:cooperations[i].adviserid})	
      var adviser = {}
-     adviser['name']  = ads[i].name
-     adviser['id'] = ads[i].id
-     var profiles = await ctx.prismaHr.profiles({where:{user:{id:ads[i].id}}})
-     adviser['phone'] = ads[i].phone
+     adviser['name']  = ad.name
+     adviser['id'] = ad.id
+     var profiles = await ctx.prismaHr.profiles({where:{user:{id:ad.id}}})
+     adviser['phone'] = ad.phone
      if (profiles[0] != null && profiles[0] != undefined){
        adviser['companyname'] = profiles[0].companyname
      }
