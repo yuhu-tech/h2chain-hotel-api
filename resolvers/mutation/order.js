@@ -260,13 +260,14 @@ const order = {
                     }
                     var dataStr = JSON.stringify(data)
                     var hashData = await utils.Str2Hex(dataStr)
-                    var result = await mutation.NativeDepositData(hashData.hex)
+                    var token = await mutation.applyAccessToken()
+                    var result = await mutation.depositData(hashData.hex,hashData.hex,token)
                     //to save the data to local
                     var contract = await ctx.prismaHotel.createContract({
                         hotelid: id,
                         adviserid: todo[0].originorder.adviserid,
                         ptid: ptid,
-                        hash: result.txhash,
+                        hash: result.data,
                         blocknumber: result.blockNumber,
                         orderid: todo[0].originorder.orderid
                     })

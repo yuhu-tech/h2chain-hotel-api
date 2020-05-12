@@ -76,13 +76,14 @@ async function clean() {
         }
         var dataStr = JSON.stringify(data)
         var hashData = await utils.Str2Hex(dataStr)
-        var result = await mutation.NativeDepositData(hashData.hex)
+        var token = await mutation.applyAccessToken()
+        var result = await mutation.depositData(hashData.hex,hashData.hex,token)
         //to save the data to local
         var contract = await prismaHotel.createContract({
           hotelid: res.orderOrigins[i].hotelId,
           adviserid: res.orderOrigins[i].adviserId,
           ptid: res.orderOrigins[i].orderCandidates[j].ptId,
-          hash: result.txhash,
+          hash: result.data,
           blocknumber: result.blockNumber,
           orderid : res.orderOrigins[i].id
         })
