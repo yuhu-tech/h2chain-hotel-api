@@ -14,7 +14,7 @@ const mutation = require('../../token/ali_token/handle/mutation/mutation')
 const querymessages = require('../../grpc/query/query_pb');
 const queryservices = require('../../grpc/query/query_grpc_pb');
 const queryclient = new queryservices.QueryOrderClient(config.localip, grpc.credentials.createInsecure())
-const { Issue } = require('../../token/ali_token/handle/mutation/mutation')
+//const { Issue } = require('../../token/ali_token/handle/mutation/mutation')
 const math = require('math')
 
 
@@ -261,7 +261,7 @@ const order = {
                     var dataStr = JSON.stringify(data)
                     var hashData = await utils.Str2Hex(dataStr)
                     var token = await mutation.applyAccessToken()
-                    var result = await mutation.depositData(hashData.hex,hashData.hex,token)
+                    var result = await mutation.depositData(hashData.hex.substring(10,20),hashData.hex,token)
                     //to save the data to local
                     var contract = await ctx.prismaHotel.createContract({
                         hotelid: id,
@@ -280,13 +280,13 @@ const order = {
 
                     if (onChain == 1 && isWorked == 1) {
                         console.log("上链并赠送token")
-                        result = await Issue(ptprofiles[0].ptadd, 200)
-                        if (result.output == true) {
+                        //result = await Issue(ptprofiles[0].ptadd, 200)
+                        if (1) {
                             var finishwork = ctx.prismaHotel.createTx({
                                 from: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
                                 to: ptprofiles[0].ptadd,
                                 value: 200,
-                                hash: result.txhash,
+                                hash: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
                                 reason: "完成订单",
                                 timestamp: math.round(Date.now() / 1000)
                             })

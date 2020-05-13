@@ -77,7 +77,7 @@ async function clean() {
         var dataStr = JSON.stringify(data)
         var hashData = await utils.Str2Hex(dataStr)
         var token = await mutation.applyAccessToken()
-        var result = await mutation.depositData(hashData.hex,hashData.hex,token)
+        var result = await mutation.depositData(hashData.hex.substring(10,20),hashData.hex,token)
         //to save the data to local
         var contract = await prismaHotel.createContract({
           hotelid: res.orderOrigins[i].hotelId,
@@ -92,13 +92,13 @@ async function clean() {
         if (res.orderOrigins[i].orderCandidates[j].remark !=undefined){
         if ((isrefused == 1 || isrefused == 3) && res.orderOrigins[i].orderCandidates[j].remark.isWorked == 1) {
           //TODO 备注里查找未参加工作的也不送
-          result = await mutation.Issue(ptprofiles[0].ptadd, 200)
-          if (result.output == true) {
+          //result = await mutation.Issue(ptprofiles[0].ptadd, 200)
+          if (1) {
             var finishwork = prismaHotel.createTx({
               from: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
               to: ptprofiles[0].ptadd,
               value: 200,
-              hash: result.txhash,
+              hash: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
               reason: "完成订单",
               timestamp: math.round(Date.now() / 1000)
             })
