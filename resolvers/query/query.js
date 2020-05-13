@@ -2,6 +2,7 @@ const { getUserId } = require('../../utils/utils')
 const handles = require('../handle/hotel')
 const { QueryTransaction } = require('../../token/ali_token/handle/query/query')
 const utils = require('../../token/ali_token/utils/utils')
+const mutation = require('../../token/ali_token/handle/mutation/mutation')
 const query = {
   //my information and my profile
   async me(parent, args, ctx, info) {
@@ -75,8 +76,11 @@ const query = {
 
 
   async searchhash(parent,args,ctx,info) {
-    var result  = await QueryTransaction(args.txhash)
-    var res = await utils.Hex2Str(result.originData)
+    var token = await mutation.applyAccessToken()
+    var result  = await QueryTransaction(args.txhash,token)
+    var buffered = new Buffer.from(result, 'base64')
+    var originData = buffered.toString();
+    var res = await utils.Hex2Str(originData)
     var res = JSON.parse(res.str)
     res['chainname'] = '蚂蚁区块链h2chain项目'
     var contracts = await ctx.prismaHotel.contracts({where:{hash:args.txhash}})
