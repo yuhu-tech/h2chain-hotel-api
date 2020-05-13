@@ -1,10 +1,11 @@
 const path = require('path')
+const request = require('request')
 const env = require("../env/env")
 const fs = require('fs')
 const abi = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../contracts/MyToken_sol_MyToken.abi'), String))
 const contractName = 'MyTokenv2.0.3'
 
-const urlCall = 'https://rest.baas.alipay.com/api/contract/chainCallForBiz';
+const urlCall = 'https://rest.baas.alipay.com/api/contract/chainCall';
 let bizid = 'a00e36c5';
 let account = 'qinxi';
 let tenantid = 'OZHZQHJH';
@@ -66,7 +67,8 @@ function QueryBalanceOf(userId) {
 
 //存证后，如果需要查询存证数据，可通过 QueryTransaction 传入存证交易的 hash 查询
 function QueryTransaction(txHash, token) {
-    options = {
+  return new Promise((resolve,reject) => {
+    const options = {
         url: urlCall,
         method: 'POST',
         body: {
@@ -74,10 +76,11 @@ function QueryTransaction(txHash, token) {
             method: method,
             hash: txHash,
             accessId: accessId,
-            token: token
+            token: token.data
         },
         json: true
     }
+
     request(options, function (err, res, body) {
         if (err) {
             console.log(err);
@@ -85,6 +88,7 @@ function QueryTransaction(txHash, token) {
             resolve(body);
         }
     });
+    })
 }
 
 //通过 QueryTransaction 查询到存证交易，证明交易发生，通过 QueryTransactionReceipt 可以验证交易成功（return_code 为0），共识后进入区块。

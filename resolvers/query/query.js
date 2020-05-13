@@ -78,7 +78,7 @@ const query = {
   async searchhash(parent,args,ctx,info) {
     var token = await mutation.applyAccessToken()
     var result  = await QueryTransaction(args.txhash,token)
-    var buffered = new Buffer.from(result, 'base64')
+    var buffered = new Buffer.from(JSON.parse(result.data).transactionDO.data, 'base64')
     var originData = buffered.toString();
     var res = await utils.Hex2Str(originData)
     var res = JSON.parse(res.str)
