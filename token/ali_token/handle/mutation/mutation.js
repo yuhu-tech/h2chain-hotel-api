@@ -70,8 +70,6 @@ function depositData(orderId, content, token) {
       json: true
     }
 
-    console.log(options);
-
     request(options, function (err, res, body) {
       if (err) {
         console.log(err);

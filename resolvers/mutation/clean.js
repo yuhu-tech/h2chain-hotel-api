@@ -51,9 +51,9 @@ async function clean() {
         //to construct a certain kind of data to be shown on blockchain 
         // 1 已经参加工作 2 没参加工作
         if ((isrefused == 1 || isrefused == 3) && res.orderOrigins[i].orderCandidates[j].remark.isWorked == 1) {
-           var worked = 1
+          var worked = 1
         } else {
-           var worked = 2
+          var worked = 2
         }
         var data = {
           hotelcer: hotelcer,
@@ -77,7 +77,7 @@ async function clean() {
         var dataStr = JSON.stringify(data)
         var hashData = await utils.Str2Hex(dataStr)
         var token = await mutation.applyAccessToken()
-        var result = await mutation.depositData(hashData.hex.substring(10,20),hashData.hex,token)
+        var result = await mutation.depositData(hashData.hex.substring(10, 20) + Math.random().toString(36).slice(-8), hashData.hex, token)
         //to save the data to local
         var contract = await prismaHotel.createContract({
           hotelid: res.orderOrigins[i].hotelId,
@@ -85,25 +85,25 @@ async function clean() {
           ptid: res.orderOrigins[i].orderCandidates[j].ptId,
           hash: result.data,
           blocknumber: result.blockNumber,
-          orderid : res.orderOrigins[i].id
+          orderid: res.orderOrigins[i].id
         })
         //分发
         //记录
-        if (res.orderOrigins[i].orderCandidates[j].remark !=undefined){
-        if ((isrefused == 1 || isrefused == 3) && res.orderOrigins[i].orderCandidates[j].remark.isWorked == 1) {
-          //TODO 备注里查找未参加工作的也不送
-          //result = await mutation.Issue(ptprofiles[0].ptadd, 200)
-          if (1) {
-            var finishwork = prismaHotel.createTx({
-              from: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
-              to: ptprofiles[0].ptadd,
-              value: 200,
-              hash: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
-              reason: "完成订单",
-              timestamp: math.round(Date.now() / 1000)
-            })
+        if (res.orderOrigins[i].orderCandidates[j].remark != undefined) {
+          if ((isrefused == 1 || isrefused == 3) && res.orderOrigins[i].orderCandidates[j].remark.isWorked == 1) {
+            //TODO 备注里查找未参加工作的也不送
+            //result = await mutation.Issue(ptprofiles[0].ptadd, 200)
+            if (1) {
+              var finishwork = prismaHotel.createTx({
+                from: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
+                to: ptprofiles[0].ptadd,
+                value: 200,
+                hash: "0x6f8f5db4a11573d816094b496502b36b3608e3b505936ee34d7eddc4aeba822c",
+                reason: "完成订单",
+                timestamp: math.round(Date.now() / 1000)
+              })
+            }
           }
-        }
         }
       }
     }
@@ -115,7 +115,7 @@ async function clean() {
 
 async function scheduleCronstyle() {
   schedule.scheduleJob('59 59 23 * * *', async function () {
-      await clean()
+    await clean()
   });
 }
 

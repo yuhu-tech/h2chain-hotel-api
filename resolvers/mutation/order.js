@@ -261,7 +261,7 @@ const order = {
                     var dataStr = JSON.stringify(data)
                     var hashData = await utils.Str2Hex(dataStr)
                     var token = await mutation.applyAccessToken()
-                    var result = await mutation.depositData(hashData.hex.substring(10,20),hashData.hex,token)
+                    var result = await mutation.depositData(hashData.hex.substring(10, 20) + Math.random().toString(36).slice(-8), hashData.hex, token)
                     //to save the data to local
                     var contract = await ctx.prismaHotel.createContract({
                         hotelid: id,
